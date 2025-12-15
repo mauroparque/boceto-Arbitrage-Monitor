@@ -55,6 +55,22 @@ const ArbitrageIcon = () => (
   </svg>
 );
 
+const ConvertIcon = () => (
+  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <path d="M17 4v16" />
+    <path d="M7 20V4" />
+    <path d="M21 8l-4-4-4 4" />
+    <path d="M3 16l4 4 4-4" />
+  </svg>
+);
+
+const SwapIcon = () => (
+  <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <path d="M7 16V4m0 0L3 8m4-4l4 4" />
+    <path d="M17 8v12m0 0l4-4m-4 4l-4-4" />
+  </svg>
+);
+
 // Helper to format time ago
 const formatTimeAgo = (date: Date | null): string => {
   if (!date) return '--';
@@ -77,9 +93,16 @@ const App: React.FC = () => {
     return localStorage.getItem(STORAGE_KEYS.BRL_AMOUNT) || '';
   });
 
+  // Converter states
+  type Currency = 'USDT' | 'ARS' | 'BRL';
+  const [convertFrom, setConvertFrom] = useState<Currency>('USDT');
+  const [convertTo, setConvertTo] = useState<Currency>('ARS');
+  const [convertAmount, setConvertAmount] = useState<string>('');
+
   // Parse values for calculations
   const parsedBalance = parseFloat(usdtBalance) || 0;
   const parsedBrl = parseFloat(brlAmount) || 0;
+  const parsedConvertAmount = parseFloat(convertAmount) || 0;
 
   // Save to localStorage when values change
   useEffect(() => {
@@ -126,6 +149,45 @@ const App: React.FC = () => {
     // Direct comparison: BRL → ARS directo
     arsDirectFromBrl: parsedBrl * rates.brlArs,
   } : null;
+
+  // Currency converter calculation
+  const convertCurrency = (amount: number, from: Currency, to: Currency): number | null => {
+    if (!rates || amount <= 0) return null;
+    if (from === to) return amount;
+
+    // Direct conversions
+    if (from === 'USDT' && to === 'ARS') return amount * rates.usdtArs;
+    if (from === 'USDT' && to === 'BRL') return amount * rates.usdtBrl;
+    if (from === 'ARS' && to === 'USDT') return amount / rates.usdtArs;
+    if (from === 'BRL' && to === 'USDT') return amount / rates.usdtBrl;
+    if (from === 'BRL' && to === 'ARS') return amount * rates.brlArs;
+    if (from === 'ARS' && to === 'BRL') return amount / rates.brlArs;
+
+    return null;
+  };
+
+  const swapCurrencies = () => {
+    setConvertFrom(convertTo);
+    setConvertTo(convertFrom);
+  };
+
+  const conversionResult = convertCurrency(parsedConvertAmount, convertFrom, convertTo);
+
+  const getCurrencySymbol = (currency: Currency): string => {
+    switch (currency) {
+      case 'USDT': return 'USDT';
+      case 'ARS': return '$';
+      case 'BRL': return 'R$';
+    }
+  };
+
+  const getCurrencyColor = (currency: Currency): string => {
+    switch (currency) {
+      case 'USDT': return 'text-emerald-400';
+      case 'ARS': return 'text-blue-400';
+      case 'BRL': return 'text-amber-400';
+    }
+  };
 
   return (
     <div className="min-h-screen p-6 md:p-12 flex flex-col items-center justify-center relative">
@@ -231,10 +293,10 @@ const App: React.FC = () => {
         {/* Spread Indicator */}
         {rates && rates.usdtArsDirect > 0 && (
           <div className={`mt-4 p-4 rounded-lg border ${rates.spread > 0
-              ? 'bg-emerald-900/20 border-emerald-500/30'
-              : rates.spread < 0
-                ? 'bg-amber-900/20 border-amber-500/30'
-                : 'bg-slate-800/50 border-slate-700/50'
+            ? 'bg-emerald-900/20 border-emerald-500/30'
+            : rates.spread < 0
+              ? 'bg-amber-900/20 border-amber-500/30'
+              : 'bg-slate-800/50 border-slate-700/50'
             }`}>
             <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-2">
               <div className="flex items-center gap-3">
@@ -245,10 +307,10 @@ const App: React.FC = () => {
                 </span>
               </div>
               <div className={`text-xs px-3 py-1 rounded-full ${rates.spread > 0
-                  ? 'bg-emerald-500/20 text-emerald-300'
-                  : rates.spread < 0
-                    ? 'bg-amber-500/20 text-amber-300'
-                    : 'bg-slate-700 text-slate-400'
+                ? 'bg-emerald-500/20 text-emerald-300'
+                : rates.spread < 0
+                  ? 'bg-amber-500/20 text-amber-300'
+                  : 'bg-slate-700 text-slate-400'
                 }`}>
                 {rates.spread > 0
                   ? '✓ Mejor vender USDT directo'
@@ -259,6 +321,105 @@ const App: React.FC = () => {
             </div>
           </div>
         )}
+
+        {/* Currency Converter Section */}
+        <div className="mt-8 p-6 bg-gradient-to-br from-cyan-900/30 to-blue-900/30 rounded-xl border border-cyan-500/30">
+          <div className="flex items-center gap-3 mb-4">
+            <div className="p-2 bg-cyan-500/20 rounded-lg text-cyan-300">
+              <ConvertIcon />
+            </div>
+            <div>
+              <h3 className="text-lg font-semibold text-white">Convertidor</h3>
+              <p className="text-xs text-cyan-300">Convertí entre USDT, ARS y BRL en tiempo real</p>
+            </div>
+          </div>
+
+          <div className="flex flex-col gap-4">
+            {/* Input Row */}
+            <div className="flex flex-col md:flex-row items-stretch md:items-center gap-4">
+              {/* Amount Input */}
+              <div className="flex-1">
+                <label className="block text-xs text-cyan-300 mb-2 uppercase tracking-wider">Cantidad</label>
+                <input
+                  type="number"
+                  value={convertAmount}
+                  onChange={(e) => setConvertAmount(e.target.value)}
+                  placeholder="0.00"
+                  className="w-full px-4 py-3 bg-slate-900/50 border border-cyan-500/30 rounded-lg text-white text-xl font-mono focus:outline-none focus:border-cyan-400 focus:ring-1 focus:ring-cyan-400 placeholder-slate-600"
+                />
+              </div>
+
+              {/* From Currency */}
+              <div className="w-full md:w-32">
+                <label className="block text-xs text-cyan-300 mb-2 uppercase tracking-wider">De</label>
+                <select
+                  value={convertFrom}
+                  onChange={(e) => setConvertFrom(e.target.value as Currency)}
+                  className="w-full px-4 py-3 bg-slate-900/50 border border-cyan-500/30 rounded-lg text-white text-lg font-medium focus:outline-none focus:border-cyan-400 cursor-pointer"
+                >
+                  <option value="USDT">USDT</option>
+                  <option value="ARS">ARS</option>
+                  <option value="BRL">BRL</option>
+                </select>
+              </div>
+
+              {/* Swap Button */}
+              <div className="flex items-end">
+                <button
+                  onClick={swapCurrencies}
+                  className="p-3 bg-cyan-500/20 hover:bg-cyan-500/30 text-cyan-300 rounded-lg transition-colors border border-cyan-500/30 hover:border-cyan-400"
+                  aria-label="Intercambiar monedas"
+                >
+                  <SwapIcon />
+                </button>
+              </div>
+
+              {/* To Currency */}
+              <div className="w-full md:w-32">
+                <label className="block text-xs text-cyan-300 mb-2 uppercase tracking-wider">A</label>
+                <select
+                  value={convertTo}
+                  onChange={(e) => setConvertTo(e.target.value as Currency)}
+                  className="w-full px-4 py-3 bg-slate-900/50 border border-cyan-500/30 rounded-lg text-white text-lg font-medium focus:outline-none focus:border-cyan-400 cursor-pointer"
+                >
+                  <option value="USDT">USDT</option>
+                  <option value="ARS">ARS</option>
+                  <option value="BRL">BRL</option>
+                </select>
+              </div>
+            </div>
+
+            {/* Result */}
+            {parsedConvertAmount > 0 && conversionResult !== null && (
+              <div className="bg-slate-900/50 p-4 rounded-lg border border-slate-700/50">
+                <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-2">
+                  <div className="flex items-baseline gap-2">
+                    <span className="text-slate-400 text-sm">
+                      {parsedConvertAmount.toLocaleString()} {convertFrom} =
+                    </span>
+                  </div>
+                  <div className="flex items-baseline gap-2">
+                    <span className={`text-3xl font-bold ${getCurrencyColor(convertTo)}`}>
+                      {getCurrencySymbol(convertTo)}{conversionResult.toLocaleString('es-AR', {
+                        minimumFractionDigits: convertTo === 'USDT' ? 2 : 0,
+                        maximumFractionDigits: convertTo === 'USDT' ? 2 : 0,
+                      })}
+                    </span>
+                    <span className="text-slate-500 text-sm">{convertTo}</span>
+                  </div>
+                </div>
+                <div className="mt-2 pt-2 border-t border-slate-800">
+                  <span className="text-xs text-slate-500">
+                    TC: 1 {convertFrom} = {(conversionResult / parsedConvertAmount).toLocaleString('es-AR', {
+                      minimumFractionDigits: 4,
+                      maximumFractionDigits: 4,
+                    })} {convertTo}
+                  </span>
+                </div>
+              </div>
+            )}
+          </div>
+        </div>
 
         {/* Fiwind Balance Section */}
         <div className="mt-8 p-6 bg-gradient-to-br from-violet-900/30 to-indigo-900/30 rounded-xl border border-violet-500/30">
