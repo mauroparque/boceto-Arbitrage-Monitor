@@ -1,0 +1,5 @@
+{
+  "name": "BRL-ARS Arbitrage Monitor",
+  "description": "Real-time exchange rate monitor for BRL to ARS conversion via USDT, using Binance market data.",
+  "requestFramePermissions": []
+}
