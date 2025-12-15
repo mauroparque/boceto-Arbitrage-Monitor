@@ -1,6 +1,9 @@
 import { useState, useEffect, useCallback, useRef } from 'react';
 import { binanceWS, TickerUpdate } from '../services/binanceWebSocket';
 
+// Binance REST API for initial fetch
+const BINANCE_API = 'https://api.binance.com/api/v3/ticker/price';
+
 export interface RealTimeRates {
     // Raw prices from Binance
     btcUsdt: number;
@@ -31,7 +34,33 @@ export interface UseRealTimeRatesResult {
     isConnected: boolean;
     lastUpdated: Date | null;
     error: string | null;
+    isLoading: boolean;
     reconnect: () => void;
+}
+
+// Fetch initial prices from REST API
+async function fetchInitialPrices(): Promise<{
+    btcUsdt: number;
+    btcArs: number;
+    usdtBrl: number;
+    usdtArsDirect: number;
+}> {
+    const symbols = ['BTCUSDT', 'BTCARS', 'USDTBRL', 'USDTARS'];
+
+    const responses = await Promise.all(
+        symbols.map(symbol =>
+            fetch(`${BINANCE_API}?symbol=${symbol}`)
+                .then(res => res.json())
+                .catch(() => ({ price: '0' }))
+        )
+    );
+
+    return {
+        btcUsdt: parseFloat(responses[0]?.price || '0'),
+        btcArs: parseFloat(responses[1]?.price || '0'),
+        usdtBrl: parseFloat(responses[2]?.price || '0'),
+        usdtArsDirect: parseFloat(responses[3]?.price || '0'),
+    };
 }
 
 export function useRealTimeRates(): UseRealTimeRatesResult {
@@ -40,6 +69,7 @@ export function useRealTimeRates(): UseRealTimeRatesResult {
     const [isConnected, setIsConnected] = useState(false);
     const [lastUpdated, setLastUpdated] = useState<Date | null>(null);
     const [error, setError] = useState<string | null>(null);
+    const [isLoading, setIsLoading] = useState(true);
 
     // Use refs to store latest prices without triggering re-renders on every tick
     const pricesRef = useRef({
@@ -95,6 +125,7 @@ export function useRealTimeRates(): UseRealTimeRatesResult {
                 return newRates;
             });
             setLastUpdated(new Date());
+            setIsLoading(false);
         }
     }, [calculateRates]);
 
@@ -120,6 +151,17 @@ export function useRealTimeRates(): UseRealTimeRatesResult {
     }, []);
 
     useEffect(() => {
+        // Fetch initial prices immediately via REST API
+        fetchInitialPrices()
+            .then(prices => {
+                pricesRef.current = prices;
+                updateRates();
+                console.log('✅ Initial prices loaded via REST API');
+            })
+            .catch(err => {
+                console.error('Failed to fetch initial prices:', err);
+            });
+
         // Set up connection status callback
         binanceWS.setConnectionStatusCallback(setIsConnected);
 
@@ -166,6 +208,7 @@ export function useRealTimeRates(): UseRealTimeRatesResult {
         isConnected,
         lastUpdated,
         error,
+        isLoading,
         reconnect,
     };
 }
