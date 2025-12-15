@@ -183,40 +183,82 @@ const App: React.FC = () => {
           </div>
         )}
 
-        {/* Main Grid - 3 TCs */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+        {/* Main Grid - 4 TCs */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
 
-          {/* Card 1: USDT → ARS */}
+          {/* Card 1: USDT → ARS (Derivado) */}
           <StatCard
-            title="USDT → ARS"
-            value={rates ? formatCurrency(rates.usdtArs, 'ARS') : '---'}
-            subValue={rates ? `BTC/ARS: ${formatCurrency(rates.btcArs, 'ARS', 0)}` : ''}
+            title="USDT → ARS (Derivado)"
+            value={rates ? formatCurrency(rates.usdtArsDerived, 'ARS') : '---'}
+            subValue="Vía BTC"
             change={formatChange(changes.usdtArs)}
             icon={<DollarIcon />}
-            description="Dólar crypto derivado de BTC/ARS ÷ BTC/USDT"
+            description="BTC/ARS ÷ BTC/USDT"
           />
 
-          {/* Card 2: USDT → BRL */}
+          {/* Card 2: USDT → ARS (Directo) */}
+          <StatCard
+            title="USDT → ARS (Directo)"
+            value={rates && rates.usdtArsDirect > 0 ? formatCurrency(rates.usdtArsDirect, 'ARS') : '---'}
+            subValue="Par USDTARS"
+            change={formatChange(changes.usdtArsDirect)}
+            icon={<DollarIcon />}
+            description="Cotización directa Binance"
+          />
+
+          {/* Card 3: USDT → BRL */}
           <StatCard
             title="USDT → BRL"
             value={rates ? formatCurrency(rates.usdtBrl, 'BRL') : '---'}
             subValue="Binance Spot"
             change={formatChange(changes.usdtBrl)}
             icon={<BrazilIcon />}
-            description="Cotización directa USDT/BRL en Binance"
+            description="Cotización directa USDT/BRL"
           />
 
-          {/* Card 3: BRL → ARS (Highlighted) */}
+          {/* Card 4: BRL → ARS (Highlighted) */}
           <StatCard
             title="BRL → ARS"
             value={rates ? formatCurrency(rates.brlArs, 'ARS') : '---'}
-            subValue="Tipo de cambio implícito"
+            subValue="TC Implícito"
             change={formatChange(changes.brlArs)}
             icon={<ArrowRightIcon />}
-            description="TC cruzado: (USDT/ARS) ÷ (USDT/BRL)"
+            description="(USDT/ARS) ÷ (USDT/BRL)"
             highlight={true}
           />
         </div>
+
+        {/* Spread Indicator */}
+        {rates && rates.usdtArsDirect > 0 && (
+          <div className={`mt-4 p-4 rounded-lg border ${rates.spread > 0
+              ? 'bg-emerald-900/20 border-emerald-500/30'
+              : rates.spread < 0
+                ? 'bg-amber-900/20 border-amber-500/30'
+                : 'bg-slate-800/50 border-slate-700/50'
+            }`}>
+            <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-2">
+              <div className="flex items-center gap-3">
+                <span className="text-sm text-slate-400">Spread Directo vs Derivado:</span>
+                <span className={`text-lg font-bold font-mono ${rates.spread > 0 ? 'text-emerald-400' : rates.spread < 0 ? 'text-amber-400' : 'text-slate-300'
+                  }`}>
+                  {rates.spread > 0 ? '+' : ''}{rates.spread.toFixed(3)}%
+                </span>
+              </div>
+              <div className={`text-xs px-3 py-1 rounded-full ${rates.spread > 0
+                  ? 'bg-emerald-500/20 text-emerald-300'
+                  : rates.spread < 0
+                    ? 'bg-amber-500/20 text-amber-300'
+                    : 'bg-slate-700 text-slate-400'
+                }`}>
+                {rates.spread > 0
+                  ? '✓ Mejor vender USDT directo'
+                  : rates.spread < 0
+                    ? '✓ Mejor ruta vía BTC'
+                    : 'Sin diferencia'}
+              </div>
+            </div>
+          </div>
+        )}
 
         {/* Fiwind Balance Section */}
         <div className="mt-8 p-6 bg-gradient-to-br from-violet-900/30 to-indigo-900/30 rounded-xl border border-violet-500/30">
