@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useRealTimeRates } from './hooks/useRealTimeRates';
 import { StatCard } from './components/StatCard';
+import { PriceChart } from './components/PriceChart';
 
 // localStorage keys
 const STORAGE_KEYS = {
@@ -321,6 +322,9 @@ const App: React.FC = () => {
             </div>
           </div>
         )}
+
+        {/* Price History Chart */}
+        <PriceChart className="mt-8" />
 
         {/* Currency Converter Section */}
         <div className="mt-8 p-6 bg-gradient-to-br from-cyan-900/30 to-blue-900/30 rounded-xl border border-cyan-500/30">
