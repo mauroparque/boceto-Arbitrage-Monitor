@@ -11,15 +11,21 @@ const GoogleIcon = () => (
 );
 
 export const LoginPage: React.FC = () => {
-    const { signInWithGoogle, loading } = useAuth();
-    const [error, setError] = React.useState<string | null>(null);
+    const { signInWithGoogle, loading, error: authError } = useAuth();
+    const [localError, setLocalError] = React.useState<string | null>(null);
+
+    const displayError = authError || localError;
 
     const handleLogin = async () => {
         try {
-            setError(null);
+            setLocalError(null);
             await signInWithGoogle();
         } catch (err) {
-            setError('Error al iniciar sesión. Intentá de nuevo.');
+            if (err instanceof Error) {
+                setLocalError(err.message);
+            } else {
+                setLocalError('Error al iniciar sesión. Intentá de nuevo.');
+            }
         }
     };
 
@@ -42,9 +48,9 @@ export const LoginPage: React.FC = () => {
                 <div className="bg-slate-800/50 backdrop-blur-xl rounded-2xl border border-slate-700/50 p-8">
                     <h2 className="text-xl font-semibold text-white mb-6 text-center">Iniciar sesión</h2>
 
-                    {error && (
+                    {displayError && (
                         <div className="mb-4 p-3 bg-red-900/30 border border-red-500/30 rounded-lg text-red-300 text-sm text-center">
-                            {error}
+                            {displayError}
                         </div>
                     )}
 
