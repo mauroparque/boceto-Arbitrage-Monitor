@@ -1,12 +1,13 @@
 import React, { useState, useMemo } from 'react';
 import { useExpenses, ExpenseFormData } from '../hooks/useExpenses';
 import { useIncome, IncomeFormData } from '../hooks/useIncome';
+import { useBookings } from '../hooks/useBookings';
 import { useRealTimeRates } from '../hooks/useRealTimeRates';
 import { ExpenseForm } from '../components/forms/ExpenseForm';
 import { IncomeForm } from '../components/forms/IncomeForm';
-import { Expense, Income, EXPENSE_CATEGORIES } from '../types';
+import { Expense, Income, Booking, EXPENSE_CATEGORIES } from '../types';
 
-type Tab = 'income' | 'expenses' | 'pending' | 'to-confirm';
+type Tab = 'income' | 'expenses' | 'pending-expenses' | 'pending-income';
 
 const MONTHS = [
     'Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio',
@@ -14,11 +15,13 @@ const MONTHS = [
 ];
 
 export const FinancesPage: React.FC = () => {
-    const { expenses, isLoading: expensesLoading, addExpense, updateExpense, deleteExpense, getPendingExpenses, getExpensesByMonth } = useExpenses();
-    const { incomes, isLoading: incomesLoading, addIncome, updateIncome, deleteIncome, getIncomeByMonth, getTotalByMonth, getUnconfirmedIncomes, confirmIncome } = useIncome();
+    const { expenses, isLoading: expensesLoading, addExpense, updateExpense, deleteExpense, getPendingExpenses } = useExpenses();
+    const { incomes, isLoading: incomesLoading, addIncome, updateIncome, deleteIncome } = useIncome();
+    const { bookings, isLoading: bookingsLoading } = useBookings();
     const { rates } = useRealTimeRates();
 
     const [activeTab, setActiveTab] = useState<Tab>('income');
+    const [filterByMonth, setFilterByMonth] = useState(false);
     const [currentDate, setCurrentDate] = useState(new Date());
     const [showModal, setShowModal] = useState(false);
     const [modalType, setModalType] = useState<'income' | 'expense'>('income');
@@ -29,29 +32,56 @@ export const FinancesPage: React.FC = () => {
     const year = currentDate.getFullYear();
     const month = currentDate.getMonth();
 
-    const monthIncomes = useMemo(() => getIncomeByMonth(year, month), [incomes, year, month]);
-    const monthExpenses = useMemo(() => getExpensesByMonth(year, month), [expenses, year, month]);
-    const pendingExpenses = useMemo(() => getPendingExpenses(), [expenses]);
-    const unconfirmedIncomes = useMemo(() => getUnconfirmedIncomes(), [incomes]);
+    // Filter data based on month toggle
+    const filteredIncomes = useMemo(() => {
+        if (!filterByMonth) return incomes;
+        return incomes.filter((inc) => {
+            const date = inc.date.toDate();
+            return date.getFullYear() === year && date.getMonth() === month;
+        });
+    }, [incomes, filterByMonth, year, month]);
 
-    const monthTotalIncome = monthIncomes.reduce((sum, inc) => sum + inc.amountBRL, 0);
-    const monthTotalExpenses = monthExpenses.reduce((sum, exp) => sum + exp.amountBRL, 0);
-    const monthBalance = monthTotalIncome - monthTotalExpenses;
+    const filteredExpenses = useMemo(() => {
+        if (!filterByMonth) return expenses;
+        return expenses.filter((exp) => {
+            const date = exp.date.toDate();
+            return date.getFullYear() === year && date.getMonth() === month;
+        });
+    }, [expenses, filterByMonth, year, month]);
+
+    const pendingExpenses = useMemo(() => getPendingExpenses(), [expenses]);
+
+    // Pending income from confirmed bookings (not yet completed)
+    const pendingIncomeFromBookings = useMemo(() => {
+        return bookings
+            .filter((b) => b.status === 'confirmed')
+            .map((b) => ({
+                booking: b,
+                remainingAmount: b.remainingAmount,
+                checkIn: b.checkIn,
+            }));
+    }, [bookings]);
+
+    const totalPendingIncome = useMemo(() =>
+        pendingIncomeFromBookings.reduce((sum, p) => sum + p.remainingAmount, 0),
+        [pendingIncomeFromBookings]
+    );
+
+    // Totals
+    const totalIncome = filteredIncomes.reduce((sum, inc) => sum + inc.amountBRL, 0);
+    const totalExpenses = filteredExpenses.reduce((sum, exp) => sum + exp.amountBRL, 0);
+    const balance = totalIncome - totalExpenses;
 
     // Currency conversions
     const convertToARS = (brl: number) => rates ? brl * rates.brlArs : null;
     const convertToUSDT = (brl: number) => rates ? brl / rates.usdtBrl : null;
 
     const tabs: { id: Tab; label: string; icon: string; count?: number }[] = [
-        { id: 'income', label: 'Ingresos', icon: '💰', count: monthIncomes.length },
-        { id: 'expenses', label: 'Gastos', icon: '💸', count: monthExpenses.length },
-        { id: 'pending', label: 'Pendientes', icon: '⏰', count: pendingExpenses.length },
-        { id: 'to-confirm', label: 'Por Confirmar', icon: '✅', count: unconfirmedIncomes.length },
+        { id: 'income', label: 'Ingresos', icon: '💰', count: filteredIncomes.length },
+        { id: 'expenses', label: 'Gastos', icon: '💸', count: filteredExpenses.length },
+        { id: 'pending-expenses', label: 'Gastos Pendientes', icon: '⏰', count: pendingExpenses.length },
+        { id: 'pending-income', label: 'Por Cobrar', icon: '📥', count: pendingIncomeFromBookings.length },
     ];
-
-    const handleConfirmIncome = async (income: Income) => {
-        await confirmIncome(income.id);
-    };
 
     const navigateMonth = (direction: 'prev' | 'next') => {
         setCurrentDate(new Date(year, month + (direction === 'next' ? 1 : -1), 1));
@@ -72,6 +102,18 @@ export const FinancesPage: React.FC = () => {
             } else {
                 await addIncome(data);
             }
+            setShowModal(false);
+            setSelectedIncome(null);
+        } finally {
+            setIsSubmitting(false);
+        }
+    };
+
+    const handleDeleteIncome = async () => {
+        if (!selectedIncome) return;
+        setIsSubmitting(true);
+        try {
+            await deleteIncome(selectedIncome.id);
             setShowModal(false);
             setSelectedIncome(null);
         } finally {
@@ -102,7 +144,7 @@ export const FinancesPage: React.FC = () => {
         return `${date.getDate()}/${date.getMonth() + 1}/${date.getFullYear()}`;
     };
 
-    const isLoading = expensesLoading || incomesLoading;
+    const isLoading = expensesLoading || incomesLoading || bookingsLoading;
 
     return (
         <div className="space-y-6">
@@ -128,64 +170,90 @@ export const FinancesPage: React.FC = () => {
                 </div>
             </div>
 
-            {/* Month Navigation */}
+            {/* Month Filter Toggle */}
             <div className="flex items-center justify-between bg-slate-800/50 rounded-xl p-4 border border-slate-700/50">
-                <button
-                    onClick={() => navigateMonth('prev')}
-                    className="p-2 hover:bg-slate-700 rounded-lg transition-colors text-slate-400 hover:text-white"
-                >
-                    ← Anterior
-                </button>
-                <h3 className="text-lg font-semibold text-white">
-                    {MONTHS[month]} {year}
-                </h3>
-                <button
-                    onClick={() => navigateMonth('next')}
-                    className="p-2 hover:bg-slate-700 rounded-lg transition-colors text-slate-400 hover:text-white"
-                >
-                    Siguiente →
-                </button>
+                <div className="flex items-center gap-4">
+                    <label className="flex items-center gap-2 cursor-pointer">
+                        <input
+                            type="checkbox"
+                            checked={filterByMonth}
+                            onChange={(e) => setFilterByMonth(e.target.checked)}
+                            className="w-4 h-4 rounded border-slate-600 bg-slate-800 text-emerald-500 focus:ring-emerald-500"
+                        />
+                        <span className="text-sm text-slate-300">Filtrar por mes</span>
+                    </label>
+                </div>
+                {filterByMonth && (
+                    <div className="flex items-center gap-4">
+                        <button
+                            onClick={() => navigateMonth('prev')}
+                            className="p-2 hover:bg-slate-700 rounded-lg transition-colors text-slate-400 hover:text-white"
+                        >
+                            ←
+                        </button>
+                        <h3 className="text-lg font-semibold text-white min-w-[150px] text-center">
+                            {MONTHS[month]} {year}
+                        </h3>
+                        <button
+                            onClick={() => navigateMonth('next')}
+                            className="p-2 hover:bg-slate-700 rounded-lg transition-colors text-slate-400 hover:text-white"
+                        >
+                            →
+                        </button>
+                    </div>
+                )}
             </div>
 
-            {/* Month Summary */}
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            {/* Summary Cards */}
+            <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
                 <div className="bg-slate-800/50 rounded-xl p-4 border border-emerald-500/30">
-                    <p className="text-xs text-slate-500 mb-1">Ingresos del mes</p>
+                    <p className="text-xs text-slate-500 mb-1">{filterByMonth ? 'Ingresos del mes' : 'Total ingresos'}</p>
                     <p className="text-2xl font-bold text-emerald-400">
-                        R$ {monthTotalIncome.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
+                        R$ {totalIncome.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
                     </p>
                     {rates && (
                         <p className="text-xs text-slate-500 mt-1">
-                            ≈ ${convertToARS(monthTotalIncome)?.toLocaleString('es-AR', { maximumFractionDigits: 0 })} ARS
+                            ≈ ${convertToARS(totalIncome)?.toLocaleString('es-AR', { maximumFractionDigits: 0 })} ARS
                         </p>
                     )}
                 </div>
                 <div className="bg-slate-800/50 rounded-xl p-4 border border-red-500/30">
-                    <p className="text-xs text-slate-500 mb-1">Gastos del mes</p>
+                    <p className="text-xs text-slate-500 mb-1">{filterByMonth ? 'Gastos del mes' : 'Total gastos'}</p>
                     <p className="text-2xl font-bold text-red-400">
-                        R$ {monthTotalExpenses.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
+                        R$ {totalExpenses.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
                     </p>
                     {rates && (
                         <p className="text-xs text-slate-500 mt-1">
-                            ≈ ${convertToARS(monthTotalExpenses)?.toLocaleString('es-AR', { maximumFractionDigits: 0 })} ARS
+                            ≈ ${convertToARS(totalExpenses)?.toLocaleString('es-AR', { maximumFractionDigits: 0 })} ARS
                         </p>
                     )}
                 </div>
-                <div className={`bg-slate-800/50 rounded-xl p-4 border ${monthBalance >= 0 ? 'border-emerald-500/30' : 'border-red-500/30'}`}>
+                <div className={`bg-slate-800/50 rounded-xl p-4 border ${balance >= 0 ? 'border-emerald-500/30' : 'border-red-500/30'}`}>
                     <p className="text-xs text-slate-500 mb-1">Balance</p>
-                    <p className={`text-2xl font-bold ${monthBalance >= 0 ? 'text-emerald-400' : 'text-red-400'}`}>
-                        R$ {monthBalance.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
+                    <p className={`text-2xl font-bold ${balance >= 0 ? 'text-emerald-400' : 'text-red-400'}`}>
+                        R$ {balance.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
                     </p>
                     {rates && (
                         <p className="text-xs text-slate-500 mt-1">
-                            ≈ {convertToUSDT(monthBalance)?.toLocaleString('en-US', { minimumFractionDigits: 2 })} USDT
+                            ≈ {convertToUSDT(balance)?.toLocaleString('en-US', { minimumFractionDigits: 2 })} USDT
+                        </p>
+                    )}
+                </div>
+                <div className="bg-slate-800/50 rounded-xl p-4 border border-amber-500/30">
+                    <p className="text-xs text-slate-500 mb-1">Por cobrar (check-ins)</p>
+                    <p className="text-2xl font-bold text-amber-400">
+                        R$ {totalPendingIncome.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
+                    </p>
+                    {rates && (
+                        <p className="text-xs text-slate-500 mt-1">
+                            ≈ ${convertToARS(totalPendingIncome)?.toLocaleString('es-AR', { maximumFractionDigits: 0 })} ARS
                         </p>
                     )}
                 </div>
             </div>
 
             {/* Tabs */}
-            <div className="flex gap-2 bg-slate-800/50 p-1 rounded-lg w-fit">
+            <div className="flex flex-wrap gap-2 bg-slate-800/50 p-1 rounded-lg w-fit">
                 {tabs.map((tab) => (
                     <button
                         key={tab.id}
@@ -215,11 +283,11 @@ export const FinancesPage: React.FC = () => {
                 <div className="bg-slate-800/50 backdrop-blur-xl rounded-xl border border-slate-700/50 overflow-hidden">
                     {/* Income Tab */}
                     {activeTab === 'income' && (
-                        monthIncomes.length === 0 ? (
-                            <p className="text-slate-500 text-center py-12">No hay ingresos registrados este mes</p>
+                        filteredIncomes.length === 0 ? (
+                            <p className="text-slate-500 text-center py-12">No hay ingresos registrados</p>
                         ) : (
                             <div className="divide-y divide-slate-700/50">
-                                {monthIncomes.map((income) => (
+                                {filteredIncomes.map((income) => (
                                     <div
                                         key={income.id}
                                         className="p-4 hover:bg-slate-700/30 cursor-pointer transition-colors"
@@ -231,7 +299,14 @@ export const FinancesPage: React.FC = () => {
                                     >
                                         <div className="flex items-center justify-between">
                                             <div>
-                                                <p className="text-white font-medium">{income.description}</p>
+                                                <div className="flex items-center gap-2">
+                                                    <p className="text-white font-medium">{income.description}</p>
+                                                    {income.bookingId && (
+                                                        <span className="text-xs px-2 py-0.5 bg-emerald-900/50 rounded text-emerald-300">
+                                                            🔗 Reserva
+                                                        </span>
+                                                    )}
+                                                </div>
                                                 <p className="text-xs text-slate-500">
                                                     {formatDate(income.date.toDate())} • {
                                                         income.category === 'rental' ? 'Alquiler' :
@@ -258,11 +333,11 @@ export const FinancesPage: React.FC = () => {
 
                     {/* Expenses Tab */}
                     {activeTab === 'expenses' && (
-                        monthExpenses.length === 0 ? (
-                            <p className="text-slate-500 text-center py-12">No hay gastos registrados este mes</p>
+                        filteredExpenses.length === 0 ? (
+                            <p className="text-slate-500 text-center py-12">No hay gastos registrados</p>
                         ) : (
                             <div className="divide-y divide-slate-700/50">
-                                {monthExpenses.map((expense) => (
+                                {filteredExpenses.map((expense) => (
                                     <div
                                         key={expense.id}
                                         className="p-4 hover:bg-slate-700/30 cursor-pointer transition-colors"
@@ -302,10 +377,10 @@ export const FinancesPage: React.FC = () => {
                         )
                     )}
 
-                    {/* Pending Tab */}
-                    {activeTab === 'pending' && (
+                    {/* Pending Expenses Tab */}
+                    {activeTab === 'pending-expenses' && (
                         pendingExpenses.length === 0 ? (
-                            <p className="text-slate-500 text-center py-12">No hay pagos pendientes 🎉</p>
+                            <p className="text-slate-500 text-center py-12">No hay gastos pendientes de pago 🎉</p>
                         ) : (
                             <div className="divide-y divide-slate-700/50">
                                 {pendingExpenses.map((expense) => (
@@ -350,54 +425,40 @@ export const FinancesPage: React.FC = () => {
                         )
                     )}
 
-                    {/* Unconfirmed Incomes Tab */}
-                    {activeTab === 'to-confirm' && (
-                        unconfirmedIncomes.length === 0 ? (
-                            <p className="text-slate-500 text-center py-12">No hay pagos por confirmar 🎉</p>
+                    {/* Pending Income (from confirmed bookings) */}
+                    {activeTab === 'pending-income' && (
+                        pendingIncomeFromBookings.length === 0 ? (
+                            <p className="text-slate-500 text-center py-12">No hay ingresos pendientes de check-in</p>
                         ) : (
                             <div className="divide-y divide-slate-700/50">
-                                {unconfirmedIncomes.map((income) => (
+                                {pendingIncomeFromBookings.map((item) => (
                                     <div
-                                        key={income.id}
+                                        key={item.booking.id}
                                         className="p-4 hover:bg-slate-700/30 transition-colors"
                                     >
                                         <div className="flex items-center justify-between">
                                             <div>
-                                                <div className="flex items-center gap-2">
-                                                    <p className="text-white font-medium">{income.description}</p>
-                                                    {income.bookingId && (
-                                                        <span className="text-xs px-2 py-0.5 bg-emerald-900/50 rounded text-emerald-300">
-                                                            🔗 Reserva
-                                                        </span>
-                                                    )}
-                                                </div>
-                                                <p className="text-xs text-slate-500">
-                                                    {formatDate(income.date.toDate())} • {
-                                                        income.category === 'rental' ? 'Pago restante' :
-                                                            income.category === 'deposit' ? 'Seña' : 'Otro'
-                                                    }
+                                                <p className="text-white font-medium">
+                                                    Restante reserva - {item.booking.guestName || formatDate(item.checkIn.toDate())}
                                                 </p>
-                                            </div>
-                                            <div className="flex items-center gap-3">
-                                                <div className="text-right">
-                                                    <p className="text-amber-400 font-semibold">
-                                                        R$ {income.amountBRL.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
-                                                    </p>
-                                                    {rates && (
-                                                        <p className="text-xs text-slate-500">
-                                                            ≈ ${convertToARS(income.amountBRL)?.toLocaleString('es-AR', { maximumFractionDigits: 0 })} ARS
-                                                        </p>
-                                                    )}
+                                                <div className="flex items-center gap-2">
+                                                    <span className="text-xs px-2 py-0.5 bg-amber-900/50 rounded text-amber-300">
+                                                        ⏰ Check-in: {formatDate(item.checkIn.toDate())}
+                                                    </span>
+                                                    <span className="text-xs text-slate-500">
+                                                        Seña pagada
+                                                    </span>
                                                 </div>
-                                                <button
-                                                    onClick={(e) => {
-                                                        e.stopPropagation();
-                                                        handleConfirmIncome(income);
-                                                    }}
-                                                    className="px-3 py-1 bg-emerald-600 hover:bg-emerald-500 text-white text-sm rounded-lg transition-colors"
-                                                >
-                                                    Confirmar
-                                                </button>
+                                            </div>
+                                            <div className="text-right">
+                                                <p className="text-amber-400 font-semibold">
+                                                    R$ {item.remainingAmount.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
+                                                </p>
+                                                {rates && (
+                                                    <p className="text-xs text-slate-500">
+                                                        ≈ ${convertToARS(item.remainingAmount)?.toLocaleString('es-AR', { maximumFractionDigits: 0 })} ARS
+                                                    </p>
+                                                )}
                                             </div>
                                         </div>
                                     </div>
@@ -434,12 +495,13 @@ export const FinancesPage: React.FC = () => {
 
                             {modalType === 'income' ? (
                                 <IncomeForm
-                                    initialData={selectedIncome || undefined}
+                                    initialData={selectedIncome ? { ...selectedIncome, id: selectedIncome.id } : undefined}
                                     onSubmit={handleIncomeSubmit}
                                     onCancel={() => {
                                         setShowModal(false);
                                         setSelectedIncome(null);
                                     }}
+                                    onDelete={selectedIncome ? handleDeleteIncome : undefined}
                                     isLoading={isSubmitting}
                                 />
                             ) : (

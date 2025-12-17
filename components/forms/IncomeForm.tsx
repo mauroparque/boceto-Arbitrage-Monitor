@@ -3,9 +3,10 @@ import { Timestamp } from 'firebase/firestore';
 import { IncomeFormData } from '../../hooks/useIncome';
 
 interface IncomeFormProps {
-    initialData?: Partial<IncomeFormData>;
+    initialData?: Partial<IncomeFormData> & { id?: string };
     onSubmit: (data: IncomeFormData) => Promise<void>;
     onCancel: () => void;
+    onDelete?: () => Promise<void>;
     isLoading?: boolean;
 }
 
@@ -19,8 +20,10 @@ export const IncomeForm: React.FC<IncomeFormProps> = ({
     initialData,
     onSubmit,
     onCancel,
+    onDelete,
     isLoading = false,
 }) => {
+    const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
     const [date, setDate] = useState(
         initialData?.date
             ? initialData.date.toDate().toISOString().split('T')[0]
@@ -139,6 +142,42 @@ export const IncomeForm: React.FC<IncomeFormProps> = ({
                     {isLoading ? 'Guardando...' : 'Guardar'}
                 </button>
             </div>
+
+            {/* Delete button (only when editing) */}
+            {initialData?.id && onDelete && (
+                showDeleteConfirm ? (
+                    <div className="mt-4 p-3 bg-red-900/30 border border-red-500/30 rounded-lg">
+                        <p className="text-sm text-red-300 mb-3">¿Eliminar este ingreso?</p>
+                        <div className="flex gap-2">
+                            <button
+                                type="button"
+                                onClick={() => setShowDeleteConfirm(false)}
+                                className="flex-1 px-3 py-1.5 bg-slate-700 hover:bg-slate-600 text-white text-sm rounded-lg"
+                                disabled={isLoading}
+                            >
+                                Cancelar
+                            </button>
+                            <button
+                                type="button"
+                                onClick={onDelete}
+                                className="flex-1 px-3 py-1.5 bg-red-600 hover:bg-red-500 text-white text-sm rounded-lg"
+                                disabled={isLoading}
+                            >
+                                {isLoading ? 'Eliminando...' : 'Eliminar'}
+                            </button>
+                        </div>
+                    </div>
+                ) : (
+                    <button
+                        type="button"
+                        onClick={() => setShowDeleteConfirm(true)}
+                        className="w-full mt-4 text-red-400 hover:text-red-300 text-sm"
+                        disabled={isLoading}
+                    >
+                        Eliminar ingreso
+                    </button>
+                )
+            )}
         </form>
     );
 };

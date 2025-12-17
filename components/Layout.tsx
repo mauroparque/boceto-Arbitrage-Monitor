@@ -15,6 +15,7 @@ export const Layout: React.FC = () => {
     const navItems = [
         { to: '/', icon: '📊', label: 'Dashboard' },
         { to: '/calendar', icon: '📅', label: 'Calendario' },
+        { to: '/bookings', icon: '📋', label: 'Reservas' },
         { to: '/finances', icon: '💰', label: 'Finanzas' },
         { to: '/rates', icon: '📈', label: 'TCs' },
     ];

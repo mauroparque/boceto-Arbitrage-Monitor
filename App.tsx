@@ -5,6 +5,7 @@ import { Layout } from './components/Layout';
 import { LoginPage } from './pages/LoginPage';
 import { DashboardPage } from './pages/DashboardPage';
 import { CalendarPage } from './pages/CalendarPage';
+import { BookingsPage } from './pages/BookingsPage';
 import { FinancesPage } from './pages/FinancesPage';
 import { RatesPage } from './pages/RatesPage';
 
@@ -69,6 +70,7 @@ const AppRoutes: React.FC = () => {
       >
         <Route path="/" element={<DashboardPage />} />
         <Route path="/calendar" element={<CalendarPage />} />
+        <Route path="/bookings" element={<BookingsPage />} />
         <Route path="/finances" element={<FinancesPage />} />
         <Route path="/rates" element={<RatesPage />} />
       </Route>
