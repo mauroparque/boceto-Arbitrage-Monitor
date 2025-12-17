@@ -4,6 +4,12 @@ import { CalendarMonthView } from '../components/Calendar/CalendarMonthView';
 import { BookingForm } from '../components/forms/BookingForm';
 import { Booking, BookingFormData } from '../types';
 import { Timestamp } from 'firebase/firestore';
+import {
+    createIncomesForBooking,
+    deleteRemainingIncomeForBooking,
+    deleteAllIncomesForBooking,
+    hasLinkedIncomes,
+} from '../services/bookingIncomeService';
 
 const MONTHS = [
     'Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio',
@@ -44,9 +50,43 @@ export const CalendarPage: React.FC = () => {
         setIsSubmitting(true);
         try {
             if (selectedBooking) {
+                // Editing existing booking
+                const oldStatus = selectedBooking.status;
+                const newStatus = data.status;
+
                 await updateBooking(selectedBooking.id, data);
+
+                // Handle status transitions
+                if (oldStatus === 'pending' && (newStatus === 'confirmed' || newStatus === 'completed')) {
+                    // Transitioning from pending to confirmed/completed: create incomes
+                    const alreadyHasIncomes = await hasLinkedIncomes(selectedBooking.id);
+                    if (!alreadyHasIncomes) {
+                        await createIncomesForBooking(
+                            { id: selectedBooking.id },
+                            data.depositAmount,
+                            data.remainingAmount,
+                            data.checkIn,
+                            data.guestName
+                        );
+                    }
+                } else if (newStatus === 'cancelled' && oldStatus !== 'cancelled') {
+                    // Transitioning to cancelled: delete only remaining income (deposit is kept)
+                    await deleteRemainingIncomeForBooking(selectedBooking.id);
+                }
             } else {
-                await addBooking(data);
+                // Creating new booking
+                const bookingId = await addBooking(data);
+
+                // Create incomes if status is confirmed or completed
+                if (data.status === 'confirmed' || data.status === 'completed') {
+                    await createIncomesForBooking(
+                        { id: bookingId },
+                        data.depositAmount,
+                        data.remainingAmount,
+                        data.checkIn,
+                        data.guestName
+                    );
+                }
             }
             setShowModal(false);
             setSelectedBooking(null);
@@ -60,6 +100,8 @@ export const CalendarPage: React.FC = () => {
         if (!selectedBooking) return;
         setIsSubmitting(true);
         try {
+            // Delete all linked incomes before deleting the booking
+            await deleteAllIncomesForBooking(selectedBooking.id);
             await deleteBooking(selectedBooking.id);
             setShowModal(false);
             setSelectedBooking(null);
