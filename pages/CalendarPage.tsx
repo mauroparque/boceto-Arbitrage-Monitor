@@ -5,7 +5,8 @@ import { BookingForm } from '../components/forms/BookingForm';
 import { Booking, BookingFormData } from '../types';
 import { Timestamp } from 'firebase/firestore';
 import {
-    createIncomesForBooking,
+    createDepositIncome,
+    createRemainingIncome,
     deleteRemainingIncomeForBooking,
     deleteAllIncomesForBooking,
     hasLinkedIncomes,
@@ -57,18 +58,42 @@ export const CalendarPage: React.FC = () => {
                 await updateBooking(selectedBooking.id, data);
 
                 // Handle status transitions
-                if (oldStatus === 'pending' && (newStatus === 'confirmed' || newStatus === 'completed')) {
-                    // Transitioning from pending to confirmed/completed: create incomes
+                if (oldStatus === 'pending' && newStatus === 'confirmed') {
+                    // Pending -> Confirmed: create only deposit
                     const alreadyHasIncomes = await hasLinkedIncomes(selectedBooking.id);
                     if (!alreadyHasIncomes) {
-                        await createIncomesForBooking(
-                            { id: selectedBooking.id },
+                        await createDepositIncome(
+                            selectedBooking.id,
                             data.depositAmount,
+                            data.checkIn,
+                            data.guestName
+                        );
+                    }
+                } else if (oldStatus === 'pending' && newStatus === 'completed') {
+                    // Pending -> Completed: create both deposit and remaining
+                    const alreadyHasIncomes = await hasLinkedIncomes(selectedBooking.id);
+                    if (!alreadyHasIncomes) {
+                        await createDepositIncome(
+                            selectedBooking.id,
+                            data.depositAmount,
+                            data.checkIn,
+                            data.guestName
+                        );
+                        await createRemainingIncome(
+                            selectedBooking.id,
                             data.remainingAmount,
                             data.checkIn,
                             data.guestName
                         );
                     }
+                } else if (oldStatus === 'confirmed' && newStatus === 'completed') {
+                    // Confirmed -> Completed: create remaining income
+                    await createRemainingIncome(
+                        selectedBooking.id,
+                        data.remainingAmount,
+                        data.checkIn,
+                        data.guestName
+                    );
                 } else if (newStatus === 'cancelled' && oldStatus !== 'cancelled') {
                     // Transitioning to cancelled: delete only remaining income (deposit is kept)
                     await deleteRemainingIncomeForBooking(selectedBooking.id);
@@ -77,11 +102,25 @@ export const CalendarPage: React.FC = () => {
                 // Creating new booking
                 const bookingId = await addBooking(data);
 
-                // Create incomes if status is confirmed or completed
-                if (data.status === 'confirmed' || data.status === 'completed') {
-                    await createIncomesForBooking(
-                        { id: bookingId },
+                // Create incomes based on status
+                if (data.status === 'confirmed') {
+                    // Confirmed: only create deposit
+                    await createDepositIncome(
+                        bookingId,
                         data.depositAmount,
+                        data.checkIn,
+                        data.guestName
+                    );
+                } else if (data.status === 'completed') {
+                    // Completed: create both deposit and remaining
+                    await createDepositIncome(
+                        bookingId,
+                        data.depositAmount,
+                        data.checkIn,
+                        data.guestName
+                    );
+                    await createRemainingIncome(
+                        bookingId,
                         data.remainingAmount,
                         data.checkIn,
                         data.guestName

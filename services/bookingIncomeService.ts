@@ -18,14 +18,12 @@ const removeUndefinedFields = (obj: Record<string, any>): Record<string, any> =>
 };
 
 /**
- * Creates income records for a confirmed booking.
+ * Creates deposit income for a confirmed booking.
  * - Deposit (30%): Created as confirmed, dated today
- * - Remaining (70%): Created as unconfirmed, dated at check-in
  */
-export const createIncomesForBooking = async (
-    booking: Booking | { id: string } & Partial<Booking>,
+export const createDepositIncome = async (
+    bookingId: string,
     depositAmount: number,
-    remainingAmount: number,
     checkIn: Timestamp,
     guestName?: string
 ): Promise<void> => {
@@ -34,7 +32,7 @@ export const createIncomesForBooking = async (
 
     // Create deposit income (confirmed, dated today)
     const depositData = removeUndefinedFields({
-        bookingId: booking.id,
+        bookingId: bookingId,
         date: Timestamp.now(),
         amountBRL: depositAmount,
         category: 'deposit' as const,
@@ -43,15 +41,29 @@ export const createIncomesForBooking = async (
         createdAt: Timestamp.now(),
     });
     await addDoc(incomesRef, depositData);
+};
 
-    // Create remaining income (unconfirmed, dated at check-in)
+/**
+ * Creates remaining income for a completed booking (check-in confirmed).
+ * - Remaining (70%): Created as confirmed, dated at check-in
+ */
+export const createRemainingIncome = async (
+    bookingId: string,
+    remainingAmount: number,
+    checkIn: Timestamp,
+    guestName?: string
+): Promise<void> => {
+    const incomesRef = collection(db, 'income');
+    const bookingLabel = guestName || formatDateRange(checkIn);
+
+    // Create remaining income (confirmed, dated at check-in)
     const remainingData = removeUndefinedFields({
-        bookingId: booking.id,
+        bookingId: bookingId,
         date: checkIn,
         amountBRL: remainingAmount,
         category: 'rental' as const,
         description: `Restante reserva - ${bookingLabel}`,
-        isConfirmed: false,
+        isConfirmed: true,
         createdAt: Timestamp.now(),
     });
     await addDoc(incomesRef, remainingData);
