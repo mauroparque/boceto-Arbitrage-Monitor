@@ -2,7 +2,7 @@ import React, { useState, useMemo } from 'react';
 import { useBookings } from '../hooks/useBookings';
 import { useRealTimeRates } from '../hooks/useRealTimeRates';
 import { Booking } from '../types';
-import { createRemainingIncome } from '../services/bookingIncomeService';
+import { createDepositIncome, createRemainingIncome } from '../services/bookingIncomeService';
 
 type StatusFilter = 'all' | 'pending' | 'confirmed' | 'completed' | 'cancelled';
 
@@ -25,6 +25,7 @@ export const BookingsPage: React.FC = () => {
     const { rates } = useRealTimeRates();
 
     const [statusFilter, setStatusFilter] = useState<StatusFilter>('all');
+    const [isConfirming, setIsConfirming] = useState<string | null>(null);
     const [isCompleting, setIsCompleting] = useState<string | null>(null);
 
     // Filter bookings by status
@@ -49,6 +50,24 @@ export const BookingsPage: React.FC = () => {
 
     const formatDate = (date: Date) => {
         return `${date.getDate().toString().padStart(2, '0')}/${(date.getMonth() + 1).toString().padStart(2, '0')}/${date.getFullYear()}`;
+    };
+
+    const handleConfirmBooking = async (booking: Booking) => {
+        setIsConfirming(booking.id);
+        try {
+            // Create deposit income and update booking status
+            await createDepositIncome(
+                booking.id,
+                booking.depositAmount,
+                booking.checkIn,
+                booking.guestName
+            );
+            await updateBooking(booking.id, { status: 'confirmed' });
+        } catch (error) {
+            console.error('Error confirming booking:', error);
+        } finally {
+            setIsConfirming(null);
+        }
     };
 
     const handleCompleteBooking = async (booking: Booking) => {
@@ -121,8 +140,8 @@ export const BookingsPage: React.FC = () => {
                         key={filter.id}
                         onClick={() => setStatusFilter(filter.id)}
                         className={`px-4 py-2 rounded-md text-sm font-medium transition-colors flex items-center gap-2 ${statusFilter === filter.id
-                                ? 'bg-slate-700 text-white'
-                                : 'text-slate-400 hover:text-white'
+                            ? 'bg-slate-700 text-white'
+                            : 'text-slate-400 hover:text-white'
                             }`}
                     >
                         {filter.label}
@@ -182,6 +201,17 @@ export const BookingsPage: React.FC = () => {
                                                 </p>
                                             )}
                                         </div>
+
+                                        {/* Confirm Button (only for pending bookings) */}
+                                        {booking.status === 'pending' && (
+                                            <button
+                                                onClick={() => handleConfirmBooking(booking)}
+                                                disabled={isConfirming === booking.id}
+                                                className="px-4 py-2 bg-amber-600 hover:bg-amber-500 disabled:bg-slate-600 text-white text-sm font-medium rounded-lg transition-colors whitespace-nowrap"
+                                            >
+                                                {isConfirming === booking.id ? 'Procesando...' : '✓ Confirmar'}
+                                            </button>
+                                        )}
 
                                         {/* Complete Button (only for confirmed bookings) */}
                                         {booking.status === 'confirmed' && (

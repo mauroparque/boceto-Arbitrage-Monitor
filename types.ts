@@ -85,7 +85,7 @@ export type ExpenseCategory =
   | 'celesc'
   | 'reparacion'
   | 'limpieza'
-  | 'comision'
+  | 'mejoras'
   | 'other';
 
 export const EXPENSE_CATEGORIES: Record<ExpenseCategory, string> = {
@@ -96,7 +96,7 @@ export const EXPENSE_CATEGORIES: Record<ExpenseCategory, string> = {
   celesc: 'CELESC',
   reparacion: 'Reparación',
   limpieza: 'Limpieza',
-  comision: 'Comisión',
+  mejoras: 'Mejoras',
   other: 'Otro',
 };
 
