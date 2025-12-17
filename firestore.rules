@@ -1,18 +1,27 @@
 rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
-    // Price history - public read, admin write only
+    // Price history - public read, admin write only (from n8n)
     match /priceHistory/{document} {
-      // Anyone can read price history
       allow read: if true;
-      
-      // Only authenticated admin (n8n service account) can write
       allow write: if false; // Writes come from Admin SDK which bypasses rules
     }
     
-    // Alert settings (optional future use)
-    match /alertSettings/{userId} {
-      allow read, write: if request.auth != null && request.auth.uid == userId;
+    // User-specific data - only authenticated owner can read/write
+    match /bookings/{docId} {
+      allow read, write: if request.auth != null;
+    }
+    
+    match /income/{docId} {
+      allow read, write: if request.auth != null;
+    }
+    
+    match /expenses/{docId} {
+      allow read, write: if request.auth != null;
+    }
+    
+    match /objectives/{docId} {
+      allow read, write: if request.auth != null;
     }
   }
 }
