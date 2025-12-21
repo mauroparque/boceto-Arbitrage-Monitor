@@ -179,7 +179,7 @@ export const CalendarPage: React.FC = () => {
             <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
                 <div>
                     <h2 className="text-2xl font-bold text-white">Calendario</h2>
-                    <p className="text-slate-400 text-sm">Gestión de reservas</p>
+                    <p className="text-stone-400 text-sm">Gestión de reservas</p>
                 </div>
                 <button
                     onClick={() => {
@@ -187,17 +187,17 @@ export const CalendarPage: React.FC = () => {
                         setSelectedDate(null);
                         setShowModal(true);
                     }}
-                    className="px-4 py-2 bg-emerald-600 hover:bg-emerald-500 text-white rounded-lg transition-colors text-sm font-medium"
+                    className="px-4 py-2 bg-amber-600 hover:bg-amber-500 text-white rounded-lg transition-colors text-sm font-medium"
                 >
                     + Nueva reserva
                 </button>
             </div>
 
             {/* Month Navigation */}
-            <div className="flex items-center justify-between bg-slate-800/50 rounded-xl p-4 border border-slate-700/50">
+            <div className="flex items-center justify-between bg-stone-800/50 rounded-xl p-4 border border-stone-700/50">
                 <button
                     onClick={() => navigateMonth('prev')}
-                    className="p-2 hover:bg-slate-700 rounded-lg transition-colors text-slate-400 hover:text-white"
+                    className="p-2 hover:bg-stone-700 rounded-lg transition-colors text-stone-400 hover:text-white"
                 >
                     ← Anterior
                 </button>
@@ -206,7 +206,7 @@ export const CalendarPage: React.FC = () => {
                 </h3>
                 <button
                     onClick={() => navigateMonth('next')}
-                    className="p-2 hover:bg-slate-700 rounded-lg transition-colors text-slate-400 hover:text-white"
+                    className="p-2 hover:bg-stone-700 rounded-lg transition-colors text-stone-400 hover:text-white"
                 >
                     Siguiente →
                 </button>
@@ -221,7 +221,7 @@ export const CalendarPage: React.FC = () => {
 
             {/* Loading state */}
             {isLoading ? (
-                <div className="flex items-center justify-center h-64 text-slate-400">
+                <div className="flex items-center justify-center h-64 text-stone-400">
                     Cargando calendario...
                 </div>
             ) : (
@@ -235,9 +235,9 @@ export const CalendarPage: React.FC = () => {
                     />
 
                     {/* Legend */}
-                    <div className="flex flex-wrap gap-4 text-xs text-slate-400">
+                    <div className="flex flex-wrap gap-4 text-xs text-stone-400">
                         <div className="flex items-center gap-2">
-                            <div className="w-4 h-4 bg-emerald-600/50 rounded" />
+                            <div className="w-4 h-4 bg-amber-600/50 rounded" />
                             <span>Check-in</span>
                         </div>
                         <div className="flex items-center gap-2">
@@ -245,20 +245,20 @@ export const CalendarPage: React.FC = () => {
                             <span>Check-out</span>
                         </div>
                         <div className="flex items-center gap-2">
-                            <div className="w-4 h-4 bg-slate-600/50 rounded" />
+                            <div className="w-4 h-4 bg-stone-600/50 rounded" />
                             <span>Ocupado</span>
                         </div>
                     </div>
 
                     {/* Stats */}
                     <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                        <div className="bg-slate-800/50 rounded-xl p-4 border border-slate-700/50">
-                            <p className="text-xs text-slate-500 mb-1">Reservas del mes</p>
+                        <div className="bg-stone-800/50 rounded-xl p-4 border border-stone-700/50">
+                            <p className="text-xs text-stone-500 mb-1">Reservas del mes</p>
                             <p className="text-2xl font-bold text-white">{monthBookings.length}</p>
                         </div>
-                        <div className="bg-slate-800/50 rounded-xl p-4 border border-slate-700/50">
-                            <p className="text-xs text-slate-500 mb-1">Total del mes</p>
-                            <p className="text-2xl font-bold text-emerald-400">
+                        <div className="bg-stone-800/50 rounded-xl p-4 border border-stone-700/50">
+                            <p className="text-xs text-stone-500 mb-1">Total del mes</p>
+                            <p className="text-2xl font-bold text-amber-400">
                                 R$ {monthBookings.reduce((sum, b) => sum + (b.totalBRL || 0), 0).toLocaleString('pt-BR')}
                             </p>
                         </div>
@@ -269,7 +269,7 @@ export const CalendarPage: React.FC = () => {
             {/* Modal */}
             {showModal && (
                 <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center p-4 z-50">
-                    <div className="bg-slate-800 rounded-2xl border border-slate-700 w-full max-w-md max-h-[90vh] overflow-y-auto">
+                    <div className="bg-stone-800 rounded-2xl border border-stone-700 w-full max-w-md max-h-[90vh] overflow-y-auto">
                         <div className="p-6">
                             <div className="flex items-center justify-between mb-6">
                                 <h3 className="text-xl font-semibold text-white">
@@ -281,7 +281,7 @@ export const CalendarPage: React.FC = () => {
                                         setSelectedBooking(null);
                                         setShowDeleteConfirm(false);
                                     }}
-                                    className="text-slate-400 hover:text-white"
+                                    className="text-stone-400 hover:text-white"
                                 >
                                     ✕
                                 </button>
@@ -289,11 +289,11 @@ export const CalendarPage: React.FC = () => {
 
                             {showDeleteConfirm ? (
                                 <div className="space-y-4">
-                                    <p className="text-slate-300">¿Estás seguro de eliminar esta reserva?</p>
+                                    <p className="text-stone-300">¿Estás seguro de eliminar esta reserva?</p>
                                     <div className="flex gap-3">
                                         <button
                                             onClick={() => setShowDeleteConfirm(false)}
-                                            className="flex-1 px-4 py-2 bg-slate-700 hover:bg-slate-600 text-white rounded-lg"
+                                            className="flex-1 px-4 py-2 bg-stone-700 hover:bg-stone-600 text-white rounded-lg"
                                         >
                                             Cancelar
                                         </button>

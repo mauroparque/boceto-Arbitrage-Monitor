@@ -130,22 +130,22 @@ export const IncomeForm: React.FC<IncomeFormProps> = ({
 
             {/* Date */}
             <div>
-                <label className="block text-sm text-slate-400 mb-1">Fecha *</label>
+                <label className="block text-sm text-stone-400 mb-1">Fecha *</label>
                 <input
                     type="date"
                     value={date}
                     onChange={(e) => setDate(e.target.value)}
-                    className="w-full px-3 py-2 bg-slate-900/50 border border-slate-700 rounded-lg text-white focus:outline-none focus:border-emerald-500"
+                    className="w-full px-3 py-2 bg-stone-900/50 border border-stone-700 rounded-lg text-white focus:outline-none focus:border-amber-500"
                 />
             </div>
 
             {/* Source Currency */}
             <div>
-                <label className="block text-sm text-slate-400 mb-1">Moneda de origen *</label>
+                <label className="block text-sm text-stone-400 mb-1">Moneda de origen *</label>
                 <select
                     value={sourceCurrency}
                     onChange={(e) => setSourceCurrency(e.target.value as SourceCurrency)}
-                    className="w-full px-3 py-2 bg-slate-900/50 border border-slate-700 rounded-lg text-white focus:outline-none focus:border-emerald-500"
+                    className="w-full px-3 py-2 bg-stone-900/50 border border-stone-700 rounded-lg text-white focus:outline-none focus:border-amber-500"
                 >
                     {SOURCE_CURRENCIES.map((curr) => (
                         <option key={curr.value} value={curr.value}>{curr.label}</option>
@@ -155,11 +155,11 @@ export const IncomeForm: React.FC<IncomeFormProps> = ({
 
             {/* Category */}
             <div>
-                <label className="block text-sm text-slate-400 mb-1">Tipo *</label>
+                <label className="block text-sm text-stone-400 mb-1">Tipo *</label>
                 <select
                     value={category}
                     onChange={(e) => setCategory(e.target.value as 'rental' | 'deposit' | 'other')}
-                    className="w-full px-3 py-2 bg-slate-900/50 border border-slate-700 rounded-lg text-white focus:outline-none focus:border-emerald-500"
+                    className="w-full px-3 py-2 bg-stone-900/50 border border-stone-700 rounded-lg text-white focus:outline-none focus:border-amber-500"
                 >
                     {INCOME_CATEGORIES.map((cat) => (
                         <option key={cat.value} value={cat.value}>{cat.label}</option>
@@ -169,7 +169,7 @@ export const IncomeForm: React.FC<IncomeFormProps> = ({
 
             {/* Amount - Dynamic based on currency */}
             <div>
-                <label className="block text-sm text-slate-400 mb-1">
+                <label className="block text-sm text-stone-400 mb-1">
                     Monto ({sourceCurrency}) *
                 </label>
                 <input
@@ -180,7 +180,7 @@ export const IncomeForm: React.FC<IncomeFormProps> = ({
                         else if (sourceCurrency === 'USDT') setAmountUSDT(e.target.value);
                         else setAmountARS(e.target.value);
                     }}
-                    className="w-full px-3 py-2 bg-slate-900/50 border border-slate-700 rounded-lg text-white focus:outline-none focus:border-emerald-500"
+                    className="w-full px-3 py-2 bg-stone-900/50 border border-stone-700 rounded-lg text-white focus:outline-none focus:border-amber-500"
                     placeholder="0.00"
                     step="0.01"
                 />
@@ -189,19 +189,19 @@ export const IncomeForm: React.FC<IncomeFormProps> = ({
             {/* TC - Only for BRL */}
             {sourceCurrency === 'BRL' && (
                 <div>
-                    <label className="block text-sm text-slate-400 mb-1">
+                    <label className="block text-sm text-stone-400 mb-1">
                         TC USDT/BRL al momento *
                     </label>
                     <input
                         type="number"
                         value={tcAtOperation}
                         onChange={(e) => setTcAtOperation(e.target.value)}
-                        className="w-full px-3 py-2 bg-slate-900/50 border border-slate-700 rounded-lg text-white focus:outline-none focus:border-emerald-500"
+                        className="w-full px-3 py-2 bg-stone-900/50 border border-stone-700 rounded-lg text-white focus:outline-none focus:border-amber-500"
                         placeholder="Ej: 5.56"
                         step="0.001"
                     />
                     {calculatedUSDT && (
-                        <p className="mt-1 text-xs text-emerald-400">
+                        <p className="mt-1 text-xs text-amber-400">
                             ≈ {calculatedUSDT} USDT
                         </p>
                     )}
@@ -210,12 +210,12 @@ export const IncomeForm: React.FC<IncomeFormProps> = ({
 
             {/* Description */}
             <div>
-                <label className="block text-sm text-slate-400 mb-1">Descripción *</label>
+                <label className="block text-sm text-stone-400 mb-1">Descripción *</label>
                 <input
                     type="text"
                     value={description}
                     onChange={(e) => setDescription(e.target.value)}
-                    className="w-full px-3 py-2 bg-slate-900/50 border border-slate-700 rounded-lg text-white focus:outline-none focus:border-emerald-500"
+                    className="w-full px-3 py-2 bg-stone-900/50 border border-stone-700 rounded-lg text-white focus:outline-none focus:border-amber-500"
                     placeholder="Ej: Seña reserva 15/12 - 20/12"
                 />
             </div>
@@ -226,14 +226,14 @@ export const IncomeForm: React.FC<IncomeFormProps> = ({
                 <button
                     type="button"
                     onClick={onCancel}
-                    className="flex-1 px-4 py-2 bg-slate-700 hover:bg-slate-600 text-white rounded-lg transition-colors"
+                    className="flex-1 px-4 py-2 bg-stone-700 hover:bg-stone-600 text-white rounded-lg transition-colors"
                     disabled={isLoading}
                 >
                     Cancelar
                 </button>
                 <button
                     type="submit"
-                    className="flex-1 px-4 py-2 bg-emerald-600 hover:bg-emerald-500 text-white rounded-lg transition-colors disabled:opacity-50"
+                    className="flex-1 px-4 py-2 bg-amber-600 hover:bg-amber-500 text-white rounded-lg transition-colors disabled:opacity-50"
                     disabled={isLoading}
                 >
                     {isLoading ? 'Guardando...' : 'Guardar'}
@@ -249,7 +249,7 @@ export const IncomeForm: React.FC<IncomeFormProps> = ({
                             <button
                                 type="button"
                                 onClick={() => setShowDeleteConfirm(false)}
-                                className="flex-1 px-3 py-1.5 bg-slate-700 hover:bg-slate-600 text-white text-sm rounded-lg"
+                                className="flex-1 px-3 py-1.5 bg-stone-700 hover:bg-stone-600 text-white text-sm rounded-lg"
                                 disabled={isLoading}
                             >
                                 Cancelar

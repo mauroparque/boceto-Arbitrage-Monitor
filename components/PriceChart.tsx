@@ -107,12 +107,12 @@ export const PriceChart: React.FC<PriceChartProps> = ({ className }) => {
     }, [chartData]);
 
     return (
-        <div className={`bg-slate-900/50 rounded-xl border border-slate-700/50 p-6 ${className}`}>
+        <div className={`bg-stone-900/50 rounded-xl border border-stone-700/50 p-6 ${className}`}>
             {/* Header */}
             <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-4">
                 <div>
                     <h3 className="text-lg font-semibold text-white">Historial de Precios</h3>
-                    <p className="text-xs text-slate-400">Datos cada 15 minutos</p>
+                    <p className="text-xs text-stone-400">Datos cada 15 minutos</p>
                 </div>
 
                 {/* Controls */}
@@ -121,7 +121,7 @@ export const PriceChart: React.FC<PriceChartProps> = ({ className }) => {
                     <select
                         value={selectedTC}
                         onChange={(e) => setSelectedTC(e.target.value as TCType)}
-                        className="px-3 py-2 bg-slate-800 border border-slate-700 rounded-lg text-white text-sm focus:outline-none focus:border-slate-500"
+                        className="px-3 py-2 bg-stone-800 border border-stone-700 rounded-lg text-white text-sm focus:outline-none focus:border-stone-500"
                     >
                         {TC_OPTIONS.map(tc => (
                             <option key={tc.value} value={tc.value}>{tc.label}</option>
@@ -129,14 +129,14 @@ export const PriceChart: React.FC<PriceChartProps> = ({ className }) => {
                     </select>
 
                     {/* Time Range */}
-                    <div className="flex rounded-lg overflow-hidden border border-slate-700">
+                    <div className="flex rounded-lg overflow-hidden border border-stone-700">
                         {TIME_RANGE_OPTIONS.map(tr => (
                             <button
                                 key={tr.value}
                                 onClick={() => setTimeRange(tr.value)}
                                 className={`px-3 py-2 text-sm transition-colors ${timeRange === tr.value
-                                        ? 'bg-slate-700 text-white'
-                                        : 'bg-slate-800 text-slate-400 hover:text-white'
+                                        ? 'bg-stone-700 text-white'
+                                        : 'bg-stone-800 text-stone-400 hover:text-white'
                                     }`}
                             >
                                 {tr.label}
@@ -149,15 +149,15 @@ export const PriceChart: React.FC<PriceChartProps> = ({ className }) => {
             {/* Stats Bar */}
             {weeklyAverage !== null && (
                 <div className="flex flex-wrap gap-4 mb-4 text-xs">
-                    <div className="bg-slate-800/50 px-3 py-2 rounded-lg">
-                        <span className="text-slate-500">Promedio Semanal: </span>
-                        <span className="text-slate-300 font-mono">{weeklyAverage.toFixed(4)}</span>
+                    <div className="bg-stone-800/50 px-3 py-2 rounded-lg">
+                        <span className="text-stone-500">Promedio Semanal: </span>
+                        <span className="text-stone-300 font-mono">{weeklyAverage.toFixed(4)}</span>
                     </div>
                     {currentVsAverage !== null && (
-                        <div className={`px-3 py-2 rounded-lg ${currentVsAverage > 0 ? 'bg-emerald-900/30' : currentVsAverage < 0 ? 'bg-red-900/30' : 'bg-slate-800/50'
+                        <div className={`px-3 py-2 rounded-lg ${currentVsAverage > 0 ? 'bg-amber-900/30' : currentVsAverage < 0 ? 'bg-red-900/30' : 'bg-stone-800/50'
                             }`}>
-                            <span className="text-slate-500">vs Promedio: </span>
-                            <span className={`font-mono ${currentVsAverage > 0 ? 'text-emerald-400' : currentVsAverage < 0 ? 'text-red-400' : 'text-slate-300'
+                            <span className="text-stone-500">vs Promedio: </span>
+                            <span className={`font-mono ${currentVsAverage > 0 ? 'text-amber-400' : currentVsAverage < 0 ? 'text-red-400' : 'text-stone-300'
                                 }`}>
                                 {currentVsAverage > 0 ? '+' : ''}{currentVsAverage.toFixed(2)}%
                             </span>
@@ -169,18 +169,18 @@ export const PriceChart: React.FC<PriceChartProps> = ({ className }) => {
             {/* Chart Container */}
             <div className="relative">
                 {isLoading && (
-                    <div className="absolute inset-0 flex items-center justify-center bg-slate-900/50 z-10">
-                        <div className="text-slate-400">Cargando historial...</div>
+                    <div className="absolute inset-0 flex items-center justify-center bg-stone-900/50 z-10">
+                        <div className="text-stone-400">Cargando historial...</div>
                     </div>
                 )}
                 {error && (
-                    <div className="absolute inset-0 flex items-center justify-center bg-slate-900/50 z-10">
+                    <div className="absolute inset-0 flex items-center justify-center bg-stone-900/50 z-10">
                         <div className="text-red-400">{error}</div>
                     </div>
                 )}
                 {!isLoading && chartData.length === 0 && !error && (
-                    <div className="absolute inset-0 flex items-center justify-center bg-slate-900/50 z-10">
-                        <div className="text-center text-slate-400">
+                    <div className="absolute inset-0 flex items-center justify-center bg-stone-900/50 z-10">
+                        <div className="text-center text-stone-400">
                             <p>No hay datos históricos aún</p>
                             <p className="text-xs mt-1">El historial se construye con n8n cada 15 minutos</p>
                         </div>

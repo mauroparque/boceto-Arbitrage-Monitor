@@ -30,22 +30,22 @@ export const LoginPage: React.FC = () => {
     };
 
     return (
-        <div className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 flex items-center justify-center p-4">
+        <div className="min-h-screen bg-gradient-to-br from-stone-900 via-stone-800 to-stone-900 flex items-center justify-center p-4">
             <div className="max-w-md w-full">
                 {/* Logo / Title */}
                 <div className="text-center mb-8">
-                    <div className="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-br from-emerald-500 to-cyan-500 rounded-2xl mb-4">
+                    <div className="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-br from-amber-500 to-cyan-500 rounded-2xl mb-4">
                         <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                             <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" />
                             <polyline points="9 22 9 12 15 12 15 22" />
                         </svg>
                     </div>
                     <h1 className="text-3xl font-bold text-white mb-2">Property Manager</h1>
-                    <p className="text-slate-400">Gestión de tu propiedad en Brasil</p>
+                    <p className="text-stone-400">Gestión de tu propiedad en Brasil</p>
                 </div>
 
                 {/* Login Card */}
-                <div className="bg-slate-800/50 backdrop-blur-xl rounded-2xl border border-slate-700/50 p-8">
+                <div className="bg-stone-800/50 backdrop-blur-xl rounded-2xl border border-stone-700/50 p-8">
                     <h2 className="text-xl font-semibold text-white mb-6 text-center">Iniciar sesión</h2>
 
                     {displayError && (
@@ -63,7 +63,7 @@ export const LoginPage: React.FC = () => {
                         {loading ? 'Cargando...' : 'Continuar con Google'}
                     </button>
 
-                    <p className="mt-6 text-xs text-slate-500 text-center">
+                    <p className="mt-6 text-xs text-stone-500 text-center">
                         Solo usuarios autorizados pueden acceder
                     </p>
                 </div>
@@ -72,15 +72,15 @@ export const LoginPage: React.FC = () => {
                 <div className="mt-8 grid grid-cols-3 gap-4 text-center">
                     <div className="p-3">
                         <div className="text-2xl mb-1">📅</div>
-                        <p className="text-xs text-slate-400">Calendario</p>
+                        <p className="text-xs text-stone-400">Calendario</p>
                     </div>
                     <div className="p-3">
                         <div className="text-2xl mb-1">💰</div>
-                        <p className="text-xs text-slate-400">Finanzas</p>
+                        <p className="text-xs text-stone-400">Finanzas</p>
                     </div>
                     <div className="p-3">
                         <div className="text-2xl mb-1">📈</div>
-                        <p className="text-xs text-slate-400">TCs</p>
+                        <p className="text-xs text-stone-400">TCs</p>
                     </div>
                 </div>
             </div>

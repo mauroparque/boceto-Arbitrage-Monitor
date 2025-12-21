@@ -117,22 +117,22 @@ export const ExpenseForm: React.FC<ExpenseFormProps> = ({
 
             {/* Date */}
             <div>
-                <label className="block text-sm text-slate-400 mb-1">Fecha *</label>
+                <label className="block text-sm text-stone-400 mb-1">Fecha *</label>
                 <input
                     type="date"
                     value={date}
                     onChange={(e) => setDate(e.target.value)}
-                    className="w-full px-3 py-2 bg-slate-900/50 border border-slate-700 rounded-lg text-white focus:outline-none focus:border-red-500"
+                    className="w-full px-3 py-2 bg-stone-900/50 border border-stone-700 rounded-lg text-white focus:outline-none focus:border-red-500"
                 />
             </div>
 
             {/* Target Currency */}
             <div>
-                <label className="block text-sm text-slate-400 mb-1">Moneda *</label>
+                <label className="block text-sm text-stone-400 mb-1">Moneda *</label>
                 <select
                     value={targetCurrency}
                     onChange={(e) => setTargetCurrency(e.target.value as TargetCurrency)}
-                    className="w-full px-3 py-2 bg-slate-900/50 border border-slate-700 rounded-lg text-white focus:outline-none focus:border-red-500"
+                    className="w-full px-3 py-2 bg-stone-900/50 border border-stone-700 rounded-lg text-white focus:outline-none focus:border-red-500"
                 >
                     {TARGET_CURRENCIES.map((curr) => (
                         <option key={curr.value} value={curr.value}>{curr.label}</option>
@@ -142,11 +142,11 @@ export const ExpenseForm: React.FC<ExpenseFormProps> = ({
 
             {/* Category */}
             <div>
-                <label className="block text-sm text-slate-400 mb-1">Categoría *</label>
+                <label className="block text-sm text-stone-400 mb-1">Categoría *</label>
                 <select
                     value={category}
                     onChange={(e) => setCategory(e.target.value as ExpenseCategory)}
-                    className="w-full px-3 py-2 bg-slate-900/50 border border-slate-700 rounded-lg text-white focus:outline-none focus:border-red-500"
+                    className="w-full px-3 py-2 bg-stone-900/50 border border-stone-700 rounded-lg text-white focus:outline-none focus:border-red-500"
                 >
                     {Object.entries(EXPENSE_CATEGORIES).map(([key, label]) => (
                         <option key={key} value={key}>{label}</option>
@@ -156,7 +156,7 @@ export const ExpenseForm: React.FC<ExpenseFormProps> = ({
 
             {/* Amount - Dynamic based on currency */}
             <div>
-                <label className="block text-sm text-slate-400 mb-1">
+                <label className="block text-sm text-stone-400 mb-1">
                     Monto ({targetCurrency}) *
                 </label>
                 <input
@@ -166,7 +166,7 @@ export const ExpenseForm: React.FC<ExpenseFormProps> = ({
                         if (targetCurrency === 'BRL') setAmountBRL(e.target.value);
                         else setAmountARS(e.target.value);
                     }}
-                    className="w-full px-3 py-2 bg-slate-900/50 border border-slate-700 rounded-lg text-white focus:outline-none focus:border-red-500"
+                    className="w-full px-3 py-2 bg-stone-900/50 border border-stone-700 rounded-lg text-white focus:outline-none focus:border-red-500"
                     placeholder="0.00"
                     step="0.01"
                 />
@@ -174,14 +174,14 @@ export const ExpenseForm: React.FC<ExpenseFormProps> = ({
 
             {/* TC - Optional for USDT calculation */}
             <div>
-                <label className="block text-sm text-slate-400 mb-1">
+                <label className="block text-sm text-stone-400 mb-1">
                     TC USDT/{targetCurrency} (opcional)
                 </label>
                 <input
                     type="number"
                     value={tcAtPayment}
                     onChange={(e) => setTcAtPayment(e.target.value)}
-                    className="w-full px-3 py-2 bg-slate-900/50 border border-slate-700 rounded-lg text-white focus:outline-none focus:border-red-500"
+                    className="w-full px-3 py-2 bg-stone-900/50 border border-stone-700 rounded-lg text-white focus:outline-none focus:border-red-500"
                     placeholder={targetCurrency === 'BRL' ? 'Ej: 5.56' : 'Ej: 1530'}
                     step="0.001"
                 />
@@ -194,12 +194,12 @@ export const ExpenseForm: React.FC<ExpenseFormProps> = ({
 
             {/* Description */}
             <div>
-                <label className="block text-sm text-slate-400 mb-1">Descripción *</label>
+                <label className="block text-sm text-stone-400 mb-1">Descripción *</label>
                 <input
                     type="text"
                     value={description}
                     onChange={(e) => setDescription(e.target.value)}
-                    className="w-full px-3 py-2 bg-slate-900/50 border border-slate-700 rounded-lg text-white focus:outline-none focus:border-red-500"
+                    className="w-full px-3 py-2 bg-stone-900/50 border border-stone-700 rounded-lg text-white focus:outline-none focus:border-red-500"
                     placeholder="Ej: Pago condominio diciembre"
                 />
             </div>
@@ -211,21 +211,21 @@ export const ExpenseForm: React.FC<ExpenseFormProps> = ({
                         type="checkbox"
                         checked={isPaid}
                         onChange={(e) => setIsPaid(e.target.checked)}
-                        className="w-4 h-4 rounded border-slate-700 bg-slate-900/50 text-emerald-500 focus:ring-emerald-500"
+                        className="w-4 h-4 rounded border-stone-700 bg-stone-900/50 text-amber-500 focus:ring-amber-500"
                     />
-                    <span className="text-sm text-slate-300">Ya está pagado</span>
+                    <span className="text-sm text-stone-300">Ya está pagado</span>
                 </label>
             </div>
 
             {/* Due Date (if not paid) */}
             {!isPaid && (
                 <div>
-                    <label className="block text-sm text-slate-400 mb-1">Fecha de vencimiento</label>
+                    <label className="block text-sm text-stone-400 mb-1">Fecha de vencimiento</label>
                     <input
                         type="date"
                         value={dueDate}
                         onChange={(e) => setDueDate(e.target.value)}
-                        className="w-full px-3 py-2 bg-slate-900/50 border border-slate-700 rounded-lg text-white focus:outline-none focus:border-red-500"
+                        className="w-full px-3 py-2 bg-stone-900/50 border border-stone-700 rounded-lg text-white focus:outline-none focus:border-red-500"
                     />
                 </div>
             )}
@@ -237,21 +237,21 @@ export const ExpenseForm: React.FC<ExpenseFormProps> = ({
                         type="checkbox"
                         checked={isRecurring}
                         onChange={(e) => setIsRecurring(e.target.checked)}
-                        className="w-4 h-4 rounded border-slate-700 bg-slate-900/50 text-amber-500 focus:ring-amber-500"
+                        className="w-4 h-4 rounded border-stone-700 bg-stone-900/50 text-amber-500 focus:ring-amber-500"
                     />
-                    <span className="text-sm text-slate-300">Es gasto recurrente (mensual)</span>
+                    <span className="text-sm text-stone-300">Es gasto recurrente (mensual)</span>
                 </label>
             </div>
 
             {/* Recurring Day */}
             {isRecurring && (
                 <div>
-                    <label className="block text-sm text-slate-400 mb-1">Día del mes que vence</label>
+                    <label className="block text-sm text-stone-400 mb-1">Día del mes que vence</label>
                     <input
                         type="number"
                         value={recurringDay}
                         onChange={(e) => setRecurringDay(e.target.value)}
-                        className="w-full px-3 py-2 bg-slate-900/50 border border-slate-700 rounded-lg text-white focus:outline-none focus:border-red-500"
+                        className="w-full px-3 py-2 bg-stone-900/50 border border-stone-700 rounded-lg text-white focus:outline-none focus:border-red-500"
                         placeholder="1-31"
                         min="1"
                         max="31"
@@ -264,7 +264,7 @@ export const ExpenseForm: React.FC<ExpenseFormProps> = ({
                 <button
                     type="button"
                     onClick={onCancel}
-                    className="flex-1 px-4 py-2 bg-slate-700 hover:bg-slate-600 text-white rounded-lg transition-colors"
+                    className="flex-1 px-4 py-2 bg-stone-700 hover:bg-stone-600 text-white rounded-lg transition-colors"
                     disabled={isLoading}
                 >
                     Cancelar

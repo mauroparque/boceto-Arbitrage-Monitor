@@ -137,7 +137,7 @@ export const RatesPage: React.FC = () => {
     const sign = change > 0 ? '+' : '';
     return {
       text: `${sign}${change.toFixed(3)}%`,
-      color: change > 0 ? 'text-emerald-400' : 'text-red-400',
+      color: change > 0 ? 'text-amber-400' : 'text-red-400',
     };
   };
 
@@ -184,7 +184,7 @@ export const RatesPage: React.FC = () => {
 
   const getCurrencyColor = (currency: Currency): string => {
     switch (currency) {
-      case 'USDT': return 'text-emerald-400';
+      case 'USDT': return 'text-amber-400';
       case 'ARS': return 'text-blue-400';
       case 'BRL': return 'text-amber-400';
     }
@@ -195,37 +195,37 @@ export const RatesPage: React.FC = () => {
       {/* Header */}
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
         <div>
-          <h1 className="text-3xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-white to-slate-400">
+          <h1 className="text-3xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-white to-stone-400">
             FX Arbitrage Monitor
           </h1>
-          <p className="text-slate-400 mt-1 text-sm">
+          <p className="text-stone-400 mt-1 text-sm">
             Tipos de cambio en tiempo real
           </p>
         </div>
 
         <div className="flex items-center gap-4">
           {/* Connection Status */}
-          <div className="flex items-center gap-2 px-3 py-2 bg-slate-800/50 rounded-lg border border-slate-700/50">
+          <div className="flex items-center gap-2 px-3 py-2 bg-stone-800/50 rounded-lg border border-stone-700/50">
             <WifiIcon connected={isConnected} />
-            <span className={`text-xs font-medium ${isConnected ? 'text-emerald-400' : 'text-red-400'}`}>
+            <span className={`text-xs font-medium ${isConnected ? 'text-amber-400' : 'text-red-400'}`}>
               {isConnected ? 'LIVE' : 'OFFLINE'}
             </span>
             {isConnected && (
-              <span className="w-2 h-2 bg-emerald-400 rounded-full animate-pulse" />
+              <span className="w-2 h-2 bg-amber-400 rounded-full animate-pulse" />
             )}
           </div>
 
           {/* Last Updated */}
           <div className="text-right hidden md:block">
-            <p className="text-xs text-slate-500 font-mono uppercase">Actualizado</p>
-            <p className="text-xs text-slate-300 font-mono">{timeAgo}</p>
+            <p className="text-xs text-stone-500 font-mono uppercase">Actualizado</p>
+            <p className="text-xs text-stone-300 font-mono">{timeAgo}</p>
           </div>
 
           {/* Reconnect Button */}
           {!isConnected && (
             <button
               onClick={reconnect}
-              className="p-3 bg-slate-800 hover:bg-slate-700 text-white rounded-xl transition-colors border border-slate-700"
+              className="p-3 bg-stone-800 hover:bg-stone-700 text-white rounded-xl transition-colors border border-stone-700"
               aria-label="Reconectar"
             >
               <RefreshIcon />
@@ -289,24 +289,24 @@ export const RatesPage: React.FC = () => {
       {/* Spread Indicator */}
       {rates && rates.usdtArsDirect > 0 && (
         <div className={`mt-4 p-4 rounded-lg border ${rates.spread > 0
-          ? 'bg-emerald-900/20 border-emerald-500/30'
+          ? 'bg-amber-900/20 border-amber-500/30'
           : rates.spread < 0
             ? 'bg-amber-900/20 border-amber-500/30'
-            : 'bg-slate-800/50 border-slate-700/50'
+            : 'bg-stone-800/50 border-stone-700/50'
           }`}>
           <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-2">
             <div className="flex items-center gap-3">
-              <span className="text-sm text-slate-400">Spread Directo vs Derivado:</span>
-              <span className={`text-lg font-bold font-mono ${rates.spread > 0 ? 'text-emerald-400' : rates.spread < 0 ? 'text-amber-400' : 'text-slate-300'
+              <span className="text-sm text-stone-400">Spread Directo vs Derivado:</span>
+              <span className={`text-lg font-bold font-mono ${rates.spread > 0 ? 'text-amber-400' : rates.spread < 0 ? 'text-amber-400' : 'text-stone-300'
                 }`}>
                 {rates.spread > 0 ? '+' : ''}{rates.spread.toFixed(3)}%
               </span>
             </div>
             <div className={`text-xs px-3 py-1 rounded-full ${rates.spread > 0
-              ? 'bg-emerald-500/20 text-emerald-300'
+              ? 'bg-amber-500/20 text-amber-300'
               : rates.spread < 0
                 ? 'bg-amber-500/20 text-amber-300'
-                : 'bg-slate-700 text-slate-400'
+                : 'bg-stone-700 text-stone-400'
               }`}>
               {rates.spread > 0
                 ? '✓ Mejor vender USDT directo'
@@ -344,7 +344,7 @@ export const RatesPage: React.FC = () => {
                 value={convertAmount}
                 onChange={(e) => setConvertAmount(e.target.value)}
                 placeholder="0.00"
-                className="w-full px-4 py-3 bg-slate-900/50 border border-cyan-500/30 rounded-lg text-white text-xl font-mono focus:outline-none focus:border-cyan-400 focus:ring-1 focus:ring-cyan-400 placeholder-slate-600"
+                className="w-full px-4 py-3 bg-stone-900/50 border border-cyan-500/30 rounded-lg text-white text-xl font-mono focus:outline-none focus:border-cyan-400 focus:ring-1 focus:ring-cyan-400 placeholder-stone-600"
               />
             </div>
 
@@ -354,7 +354,7 @@ export const RatesPage: React.FC = () => {
               <select
                 value={convertFrom}
                 onChange={(e) => setConvertFrom(e.target.value as Currency)}
-                className="w-full px-4 py-3 bg-slate-900/50 border border-cyan-500/30 rounded-lg text-white text-lg font-medium focus:outline-none focus:border-cyan-400 cursor-pointer"
+                className="w-full px-4 py-3 bg-stone-900/50 border border-cyan-500/30 rounded-lg text-white text-lg font-medium focus:outline-none focus:border-cyan-400 cursor-pointer"
               >
                 <option value="USDT">USDT</option>
                 <option value="ARS">ARS</option>
@@ -379,7 +379,7 @@ export const RatesPage: React.FC = () => {
               <select
                 value={convertTo}
                 onChange={(e) => setConvertTo(e.target.value as Currency)}
-                className="w-full px-4 py-3 bg-slate-900/50 border border-cyan-500/30 rounded-lg text-white text-lg font-medium focus:outline-none focus:border-cyan-400 cursor-pointer"
+                className="w-full px-4 py-3 bg-stone-900/50 border border-cyan-500/30 rounded-lg text-white text-lg font-medium focus:outline-none focus:border-cyan-400 cursor-pointer"
               >
                 <option value="USDT">USDT</option>
                 <option value="ARS">ARS</option>
@@ -390,10 +390,10 @@ export const RatesPage: React.FC = () => {
 
           {/* Result */}
           {parsedConvertAmount > 0 && conversionResult !== null && (
-            <div className="bg-slate-900/50 p-4 rounded-lg border border-slate-700/50">
+            <div className="bg-stone-900/50 p-4 rounded-lg border border-stone-700/50">
               <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-2">
                 <div className="flex items-baseline gap-2">
-                  <span className="text-slate-400 text-sm">
+                  <span className="text-stone-400 text-sm">
                     {parsedConvertAmount.toLocaleString()} {convertFrom} =
                   </span>
                 </div>
@@ -404,11 +404,11 @@ export const RatesPage: React.FC = () => {
                       maximumFractionDigits: convertTo === 'USDT' ? 2 : 0,
                     })}
                   </span>
-                  <span className="text-slate-500 text-sm">{convertTo}</span>
+                  <span className="text-stone-500 text-sm">{convertTo}</span>
                 </div>
               </div>
-              <div className="mt-2 pt-2 border-t border-slate-800">
-                <span className="text-xs text-slate-500">
+              <div className="mt-2 pt-2 border-t border-stone-800">
+                <span className="text-xs text-stone-500">
                   TC: 1 {convertFrom} = {(conversionResult / parsedConvertAmount).toLocaleString('es-AR', {
                     minimumFractionDigits: 4,
                     maximumFractionDigits: 4,
@@ -442,31 +442,31 @@ export const RatesPage: React.FC = () => {
                 value={usdtBalance}
                 onChange={(e) => setUsdtBalance(e.target.value)}
                 placeholder="0.00"
-                className="w-full px-4 py-3 bg-slate-900/50 border border-violet-500/30 rounded-lg text-white text-xl font-mono focus:outline-none focus:border-violet-400 focus:ring-1 focus:ring-violet-400 placeholder-slate-600"
+                className="w-full px-4 py-3 bg-stone-900/50 border border-violet-500/30 rounded-lg text-white text-xl font-mono focus:outline-none focus:border-violet-400 focus:ring-1 focus:ring-violet-400 placeholder-stone-600"
               />
-              <span className="absolute right-4 top-1/2 -translate-y-1/2 text-violet-400 font-medium">USDT</span>
+              <span className="absolute right-4 top-1/2 -transtone-y-1/2 text-violet-400 font-medium">USDT</span>
             </div>
           </div>
 
           {/* Calculated Values */}
           <div className="flex-1 grid grid-cols-2 gap-4">
-            <div className="bg-slate-900/50 p-4 rounded-lg border border-slate-700/50">
-              <span className="block text-xs text-slate-500 mb-1">Equivalente ARS</span>
-              <span className="text-xl font-bold text-emerald-400">
+            <div className="bg-stone-900/50 p-4 rounded-lg border border-stone-700/50">
+              <span className="block text-xs text-stone-500 mb-1">Equivalente ARS</span>
+              <span className="text-xl font-bold text-amber-400">
                 {rates && parsedBalance > 0
                   ? `$${(parsedBalance * rates.usdtArs).toLocaleString('es-AR', { maximumFractionDigits: 0 })}`
                   : '---'}
               </span>
-              <span className="block text-xs text-slate-600 mt-1">ARS</span>
+              <span className="block text-xs text-stone-600 mt-1">ARS</span>
             </div>
-            <div className="bg-slate-900/50 p-4 rounded-lg border border-slate-700/50">
-              <span className="block text-xs text-slate-500 mb-1">Equivalente BRL</span>
+            <div className="bg-stone-900/50 p-4 rounded-lg border border-stone-700/50">
+              <span className="block text-xs text-stone-500 mb-1">Equivalente BRL</span>
               <span className="text-xl font-bold text-amber-400">
                 {rates && parsedBalance > 0
                   ? `R$${(parsedBalance * rates.usdtBrl).toLocaleString('pt-BR', { minimumFractionDigits: 2 })}`
                   : '---'}
               </span>
-              <span className="block text-xs text-slate-600 mt-1">BRL</span>
+              <span className="block text-xs text-stone-600 mt-1">BRL</span>
             </div>
           </div>
         </div>
@@ -494,9 +494,9 @@ export const RatesPage: React.FC = () => {
                 value={brlAmount}
                 onChange={(e) => setBrlAmount(e.target.value)}
                 placeholder="0.00"
-                className="w-full px-4 py-3 bg-slate-900/50 border border-amber-500/30 rounded-lg text-white text-xl font-mono focus:outline-none focus:border-amber-400 focus:ring-1 focus:ring-amber-400 placeholder-slate-600"
+                className="w-full px-4 py-3 bg-stone-900/50 border border-amber-500/30 rounded-lg text-white text-xl font-mono focus:outline-none focus:border-amber-400 focus:ring-1 focus:ring-amber-400 placeholder-stone-600"
               />
-              <span className="absolute right-4 top-1/2 -translate-y-1/2 text-amber-400 font-medium">BRL</span>
+              <span className="absolute right-4 top-1/2 -transtone-y-1/2 text-amber-400 font-medium">BRL</span>
             </div>
           </div>
 
@@ -504,20 +504,20 @@ export const RatesPage: React.FC = () => {
           {arbitrageCalc && (
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
               {/* Step 1: BRL → USDT */}
-              <div className="bg-slate-900/50 p-4 rounded-lg border border-slate-700/50 relative">
+              <div className="bg-stone-900/50 p-4 rounded-lg border border-stone-700/50 relative">
                 <div className="absolute -top-2 -left-2 w-6 h-6 bg-amber-500 rounded-full flex items-center justify-center text-xs font-bold text-black">1</div>
-                <span className="block text-xs text-slate-500 mb-1">BRL → USDT</span>
+                <span className="block text-xs text-stone-500 mb-1">BRL → USDT</span>
                 <span className="text-lg font-bold text-white">
                   {arbitrageCalc.usdtFromBrl.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
                 </span>
                 <span className="text-amber-400 ml-1">USDT</span>
-                <span className="block text-xs text-slate-600 mt-1">
+                <span className="block text-xs text-stone-600 mt-1">
                   @ R${rates?.usdtBrl.toFixed(2)}/USDT
                 </span>
               </div>
 
               {/* Arrow */}
-              <div className="hidden md:flex items-center justify-center text-slate-600">
+              <div className="hidden md:flex items-center justify-center text-stone-600">
                 <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                   <line x1="5" y1="12" x2="19" y2="12" />
                   <polyline points="12 5 19 12 12 19" />
@@ -525,14 +525,14 @@ export const RatesPage: React.FC = () => {
               </div>
 
               {/* Step 2: USDT → ARS */}
-              <div className="bg-slate-900/50 p-4 rounded-lg border border-emerald-500/30 relative">
-                <div className="absolute -top-2 -left-2 w-6 h-6 bg-emerald-500 rounded-full flex items-center justify-center text-xs font-bold text-black">2</div>
-                <span className="block text-xs text-slate-500 mb-1">USDT → ARS</span>
-                <span className="text-lg font-bold text-emerald-400">
+              <div className="bg-stone-900/50 p-4 rounded-lg border border-amber-500/30 relative">
+                <div className="absolute -top-2 -left-2 w-6 h-6 bg-amber-500 rounded-full flex items-center justify-center text-xs font-bold text-black">2</div>
+                <span className="block text-xs text-stone-500 mb-1">USDT → ARS</span>
+                <span className="text-lg font-bold text-amber-400">
                   ${arbitrageCalc.arsFromUsdt.toLocaleString('es-AR', { maximumFractionDigits: 0 })}
                 </span>
-                <span className="text-emerald-400 ml-1">ARS</span>
-                <span className="block text-xs text-slate-600 mt-1">
+                <span className="text-amber-400 ml-1">ARS</span>
+                <span className="block text-xs text-stone-600 mt-1">
                   @ ${rates?.usdtArs.toFixed(2)}/USDT
                 </span>
               </div>
@@ -541,23 +541,23 @@ export const RatesPage: React.FC = () => {
 
           {/* Summary */}
           {arbitrageCalc && (
-            <div className="bg-gradient-to-r from-emerald-900/30 to-emerald-800/20 p-4 rounded-lg border border-emerald-500/30">
+            <div className="bg-gradient-to-r from-amber-900/30 to-amber-800/20 p-4 rounded-lg border border-amber-500/30">
               <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
                 <div>
-                  <span className="block text-xs text-emerald-300 uppercase tracking-wider mb-1">Resultado Final</span>
+                  <span className="block text-xs text-amber-300 uppercase tracking-wider mb-1">Resultado Final</span>
                   <div className="flex items-baseline gap-2">
-                    <span className="text-2xl font-bold text-emerald-400">
+                    <span className="text-2xl font-bold text-amber-400">
                       R${parsedBrl.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
                     </span>
-                    <span className="text-slate-400">→</span>
+                    <span className="text-stone-400">→</span>
                     <span className="text-2xl font-bold text-white">
                       ${arbitrageCalc.arsFromUsdt.toLocaleString('es-AR', { maximumFractionDigits: 0 })} ARS
                     </span>
                   </div>
                 </div>
                 <div className="text-right">
-                  <span className="block text-xs text-slate-500 mb-1">TC Efectivo BRL/ARS</span>
-                  <span className="text-xl font-mono text-emerald-400">
+                  <span className="block text-xs text-stone-500 mb-1">TC Efectivo BRL/ARS</span>
+                  <span className="text-xl font-mono text-amber-400">
                     {(arbitrageCalc.arsFromUsdt / parsedBrl).toFixed(4)}
                   </span>
                 </div>
@@ -568,26 +568,26 @@ export const RatesPage: React.FC = () => {
       </div>
 
       {/* Raw Data Table */}
-      <div className="mt-8 pt-8 border-t border-slate-800">
-        <h4 className="text-sm font-medium text-slate-500 mb-4 uppercase tracking-widest">
+      <div className="mt-8 pt-8 border-t border-stone-800">
+        <h4 className="text-sm font-medium text-stone-500 mb-4 uppercase tracking-widest">
           Datos de Mercado (Binance)
         </h4>
-        <div className="grid grid-cols-2 md:grid-cols-3 gap-4 text-xs font-mono text-slate-400">
-          <div className="bg-slate-900/50 p-3 rounded border border-slate-800">
-            <span className="block text-slate-600 mb-1">BTC/USDT</span>
-            <span className="text-slate-300">
+        <div className="grid grid-cols-2 md:grid-cols-3 gap-4 text-xs font-mono text-stone-400">
+          <div className="bg-stone-900/50 p-3 rounded border border-stone-800">
+            <span className="block text-stone-600 mb-1">BTC/USDT</span>
+            <span className="text-stone-300">
               {rates ? `$${rates.btcUsdt.toLocaleString('en-US', { maximumFractionDigits: 2 })}` : '---'}
             </span>
           </div>
-          <div className="bg-slate-900/50 p-3 rounded border border-slate-800">
-            <span className="block text-slate-600 mb-1">BTC/ARS</span>
-            <span className="text-slate-300">
+          <div className="bg-stone-900/50 p-3 rounded border border-stone-800">
+            <span className="block text-stone-600 mb-1">BTC/ARS</span>
+            <span className="text-stone-300">
               {rates ? `$${rates.btcArs.toLocaleString('es-AR', { maximumFractionDigits: 0 })}` : '---'}
             </span>
           </div>
-          <div className="bg-slate-900/50 p-3 rounded border border-slate-800">
-            <span className="block text-slate-600 mb-1">USDT/BRL</span>
-            <span className="text-slate-300">
+          <div className="bg-stone-900/50 p-3 rounded border border-stone-800">
+            <span className="block text-stone-600 mb-1">USDT/BRL</span>
+            <span className="text-stone-300">
               {rates ? `R$${rates.usdtBrl.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}` : '---'}
             </span>
           </div>
@@ -595,11 +595,11 @@ export const RatesPage: React.FC = () => {
       </div>
 
       {/* Formula Explanation */}
-      <div className="mt-4 p-4 bg-slate-900/30 rounded-lg border border-slate-800/50">
-        <h5 className="text-xs font-medium text-slate-500 uppercase tracking-wider mb-2">Fórmulas</h5>
-        <div className="space-y-1 text-xs text-slate-400 font-mono">
-          <p><span className="text-slate-500">USDT→ARS =</span> BTC/ARS ÷ BTC/USDT</p>
-          <p><span className="text-slate-500">BRL→ARS =</span> USDT/ARS ÷ USDT/BRL</p>
+      <div className="mt-4 p-4 bg-stone-900/30 rounded-lg border border-stone-800/50">
+        <h5 className="text-xs font-medium text-stone-500 uppercase tracking-wider mb-2">Fórmulas</h5>
+        <div className="space-y-1 text-xs text-stone-400 font-mono">
+          <p><span className="text-stone-500">USDT→ARS =</span> BTC/ARS ÷ BTC/USDT</p>
+          <p><span className="text-stone-500">BRL→ARS =</span> USDT/ARS ÷ USDT/BRL</p>
         </div>
       </div>
     </div>

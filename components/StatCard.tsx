@@ -23,8 +23,8 @@ export const StatCard: React.FC<StatCardProps> = ({
     <div className={`
       relative overflow-hidden rounded-xl p-6 transition-all duration-300
       ${highlight
-        ? 'bg-gradient-to-br from-emerald-600 to-emerald-800 shadow-lg shadow-emerald-900/50 border border-emerald-500/30'
-        : 'bg-slate-800/50 border border-slate-700/50 hover:bg-slate-800 hover:border-slate-600'
+        ? 'bg-gradient-to-br from-amber-600 to-amber-800 shadow-lg shadow-amber-900/50 border border-amber-500/30'
+        : 'bg-stone-800/50 border border-stone-700/50 hover:bg-stone-800 hover:border-stone-600'
       }
     `}>
       {/* Live indicator for highlighted card */}
@@ -36,11 +36,11 @@ export const StatCard: React.FC<StatCardProps> = ({
       )}
 
       <div className="flex justify-between items-start mb-4">
-        <h3 className={`text-sm font-medium uppercase tracking-wider ${highlight ? 'text-emerald-100' : 'text-slate-400'}`}>
+        <h3 className={`text-sm font-medium uppercase tracking-wider ${highlight ? 'text-amber-100' : 'text-stone-400'}`}>
           {title}
         </h3>
         {icon && (
-          <div className={`p-2 rounded-lg ${highlight ? 'bg-emerald-500/20 text-emerald-100' : 'bg-slate-700/50 text-slate-400'}`}>
+          <div className={`p-2 rounded-lg ${highlight ? 'bg-amber-500/20 text-amber-100' : 'bg-stone-700/50 text-stone-400'}`}>
             {icon}
           </div>
         )}
@@ -48,7 +48,7 @@ export const StatCard: React.FC<StatCardProps> = ({
 
       <div className="flex flex-col gap-1">
         <div className="flex items-baseline gap-2">
-          <span className={`text-3xl font-bold tracking-tight ${highlight ? 'text-white' : 'text-slate-100'}`}>
+          <span className={`text-3xl font-bold tracking-tight ${highlight ? 'text-white' : 'text-stone-100'}`}>
             {value}
           </span>
           {change && change.text && (
@@ -58,13 +58,13 @@ export const StatCard: React.FC<StatCardProps> = ({
           )}
         </div>
         {subValue && (
-          <span className={`text-xs font-mono ${highlight ? 'text-emerald-200/80' : 'text-slate-500'}`}>
+          <span className={`text-xs font-mono ${highlight ? 'text-amber-200/80' : 'text-stone-500'}`}>
             {subValue}
           </span>
         )}
       </div>
 
-      <div className={`mt-4 text-xs ${highlight ? 'text-emerald-200' : 'text-slate-400'}`}>
+      <div className={`mt-4 text-xs ${highlight ? 'text-amber-200' : 'text-stone-400'}`}>
         {description}
       </div>
     </div>

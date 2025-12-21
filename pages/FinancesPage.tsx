@@ -165,12 +165,12 @@ export const FinancesPage: React.FC = () => {
             <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
                 <div>
                     <h2 className="text-2xl font-bold text-white">Finanzas</h2>
-                    <p className="text-slate-400 text-sm">Ingresos y gastos</p>
+                    <p className="text-stone-400 text-sm">Ingresos y gastos</p>
                 </div>
                 <div className="flex gap-2">
                     <button
                         onClick={() => openAddModal('income')}
-                        className="px-4 py-2 bg-emerald-600 hover:bg-emerald-500 text-white rounded-lg transition-colors text-sm font-medium"
+                        className="px-4 py-2 bg-amber-600 hover:bg-amber-500 text-white rounded-lg transition-colors text-sm font-medium"
                     >
                         + Ingreso
                     </button>
@@ -184,23 +184,23 @@ export const FinancesPage: React.FC = () => {
             </div>
 
             {/* Month Filter Toggle */}
-            <div className="flex items-center justify-between bg-slate-800/50 rounded-xl p-4 border border-slate-700/50">
+            <div className="flex items-center justify-between bg-stone-800/50 rounded-xl p-4 border border-stone-700/50">
                 <div className="flex items-center gap-4">
                     <label className="flex items-center gap-2 cursor-pointer">
                         <input
                             type="checkbox"
                             checked={filterByMonth}
                             onChange={(e) => setFilterByMonth(e.target.checked)}
-                            className="w-4 h-4 rounded border-slate-600 bg-slate-800 text-emerald-500 focus:ring-emerald-500"
+                            className="w-4 h-4 rounded border-stone-600 bg-stone-800 text-amber-500 focus:ring-amber-500"
                         />
-                        <span className="text-sm text-slate-300">Filtrar por mes</span>
+                        <span className="text-sm text-stone-300">Filtrar por mes</span>
                     </label>
                 </div>
                 {filterByMonth && (
                     <div className="flex items-center gap-4">
                         <button
                             onClick={() => navigateMonth('prev')}
-                            className="p-2 hover:bg-slate-700 rounded-lg transition-colors text-slate-400 hover:text-white"
+                            className="p-2 hover:bg-stone-700 rounded-lg transition-colors text-stone-400 hover:text-white"
                         >
                             ←
                         </button>
@@ -209,7 +209,7 @@ export const FinancesPage: React.FC = () => {
                         </h3>
                         <button
                             onClick={() => navigateMonth('next')}
-                            className="p-2 hover:bg-slate-700 rounded-lg transition-colors text-slate-400 hover:text-white"
+                            className="p-2 hover:bg-stone-700 rounded-lg transition-colors text-stone-400 hover:text-white"
                         >
                             →
                         </button>
@@ -219,10 +219,10 @@ export const FinancesPage: React.FC = () => {
 
             {/* Summary Cards - USDT as primary currency */}
             <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-                {/* Total Income - USDT primary */}
-                <div className="bg-slate-800/50 rounded-xl p-4 border border-emerald-500/30">
-                    <p className="text-xs text-slate-500 mb-1">{filterByMonth ? 'Ingresos del mes' : 'Total ingresos'}</p>
-                    <p className="text-2xl font-bold text-emerald-400">
+                {/* Total Income - Teal/Green */}
+                <div className="bg-stone-800/50 rounded-xl p-4 border border-teal-500/30">
+                    <p className="text-xs text-stone-500 mb-1">{filterByMonth ? 'Ingresos del mes' : 'Total ingresos'}</p>
+                    <p className="text-2xl font-bold text-teal-400">
                         {(() => {
                             const totalUSDT = filteredIncomes.reduce((sum, inc) => sum + (inc.amountUSDT || 0), 0);
                             return totalUSDT > 0
@@ -230,14 +230,14 @@ export const FinancesPage: React.FC = () => {
                                 : `R$ ${totalIncome.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}`;
                         })()}
                     </p>
-                    <p className="text-xs text-slate-500 mt-1">
+                    <p className="text-xs text-stone-500 mt-1">
                         R$ {totalIncome.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
                     </p>
                 </div>
 
-                {/* Total Expenses - USDT primary */}
-                <div className="bg-slate-800/50 rounded-xl p-4 border border-red-500/30">
-                    <p className="text-xs text-slate-500 mb-1">{filterByMonth ? 'Gastos del mes' : 'Total gastos'}</p>
+                {/* Total Expenses - Red */}
+                <div className="bg-stone-800/50 rounded-xl p-4 border border-red-500/30">
+                    <p className="text-xs text-stone-500 mb-1">{filterByMonth ? 'Gastos del mes' : 'Total gastos'}</p>
                     <p className="text-2xl font-bold text-red-400">
                         {(() => {
                             const totalUSDT = filteredExpenses.reduce((sum, exp) => sum + (exp.amountUSDT || 0), 0);
@@ -246,15 +246,15 @@ export const FinancesPage: React.FC = () => {
                                 : `R$ ${totalExpenses.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}`;
                         })()}
                     </p>
-                    <p className="text-xs text-slate-500 mt-1">
+                    <p className="text-xs text-stone-500 mt-1">
                         R$ {totalExpenses.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
                     </p>
                 </div>
 
-                {/* Balance - USDT primary */}
-                <div className={`bg-slate-800/50 rounded-xl p-4 border ${balance >= 0 ? 'border-emerald-500/30' : 'border-red-500/30'}`}>
-                    <p className="text-xs text-slate-500 mb-1">Balance (USDT)</p>
-                    <p className={`text-2xl font-bold ${balance >= 0 ? 'text-emerald-400' : 'text-red-400'}`}>
+                {/* Balance - Blue */}
+                <div className={`bg-stone-800/50 rounded-xl p-4 border ${balance >= 0 ? 'border-blue-500/30' : 'border-red-500/30'}`}>
+                    <p className="text-xs text-stone-500 mb-1">Balance (USDT)</p>
+                    <p className={`text-2xl font-bold ${balance >= 0 ? 'text-blue-400' : 'text-red-400'}`}>
                         {(() => {
                             const incomeUSDT = filteredIncomes.reduce((sum, inc) => sum + (inc.amountUSDT || 0), 0);
                             const expenseUSDT = filteredExpenses.reduce((sum, exp) => sum + (exp.amountUSDT || 0), 0);
@@ -266,19 +266,19 @@ export const FinancesPage: React.FC = () => {
                                     : `R$ ${balance.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}`;
                         })()}
                     </p>
-                    <p className="text-xs text-slate-500 mt-1">
+                    <p className="text-xs text-stone-500 mt-1">
                         R$ {balance.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
                     </p>
                 </div>
 
-                {/* Pending Income */}
-                <div className="bg-slate-800/50 rounded-xl p-4 border border-amber-500/30">
-                    <p className="text-xs text-slate-500 mb-1">Por cobrar (check-ins)</p>
+                {/* Pending Income - Amber */}
+                <div className="bg-stone-800/50 rounded-xl p-4 border border-amber-500/30">
+                    <p className="text-xs text-stone-500 mb-1">Por cobrar (check-ins)</p>
                     <p className="text-2xl font-bold text-amber-400">
                         R$ {totalPendingIncome.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
                     </p>
                     {rates && (
-                        <p className="text-xs text-slate-500 mt-1">
+                        <p className="text-xs text-stone-500 mt-1">
                             ≈ {convertToUSDT(totalPendingIncome)?.toLocaleString('en-US', { minimumFractionDigits: 2 })} USDT
                         </p>
                     )}
@@ -286,20 +286,20 @@ export const FinancesPage: React.FC = () => {
             </div>
 
             {/* Tabs */}
-            <div className="flex flex-wrap gap-2 bg-slate-800/50 p-1 rounded-lg w-fit">
+            <div className="flex flex-wrap gap-2 bg-stone-800/50 p-1 rounded-lg w-fit">
                 {tabs.map((tab) => (
                     <button
                         key={tab.id}
                         onClick={() => setActiveTab(tab.id)}
                         className={`px-4 py-2 rounded-md text-sm font-medium transition-colors flex items-center gap-2 ${activeTab === tab.id
-                            ? 'bg-slate-700 text-white'
-                            : 'text-slate-400 hover:text-white'
+                            ? 'bg-stone-700 text-white'
+                            : 'text-stone-400 hover:text-white'
                             }`}
                     >
                         <span>{tab.icon}</span>
                         {tab.label}
                         {tab.count !== undefined && tab.count > 0 && (
-                            <span className="px-1.5 py-0.5 text-xs bg-slate-600 rounded-full">
+                            <span className="px-1.5 py-0.5 text-xs bg-stone-600 rounded-full">
                                 {tab.count}
                             </span>
                         )}
@@ -309,21 +309,21 @@ export const FinancesPage: React.FC = () => {
 
             {/* Content */}
             {isLoading ? (
-                <div className="flex items-center justify-center h-32 text-slate-400">
+                <div className="flex items-center justify-center h-32 text-stone-400">
                     Cargando...
                 </div>
             ) : (
-                <div className="bg-slate-800/50 backdrop-blur-xl rounded-xl border border-slate-700/50 overflow-hidden">
+                <div className="bg-stone-800/50 backdrop-blur-xl rounded-xl border border-stone-700/50 overflow-hidden">
                     {/* Income Tab */}
                     {activeTab === 'income' && (
                         filteredIncomes.length === 0 ? (
-                            <p className="text-slate-500 text-center py-12">No hay ingresos registrados</p>
+                            <p className="text-stone-500 text-center py-12">No hay ingresos registrados</p>
                         ) : (
-                            <div className="divide-y divide-slate-700/50">
+                            <div className="divide-y divide-stone-700/50">
                                 {filteredIncomes.map((income) => (
                                     <div
                                         key={income.id}
-                                        className="p-4 hover:bg-slate-700/30 cursor-pointer transition-colors"
+                                        className="p-4 hover:bg-stone-700/30 cursor-pointer transition-colors"
                                         onClick={() => {
                                             setSelectedIncome(income);
                                             setModalType('income');
@@ -335,12 +335,12 @@ export const FinancesPage: React.FC = () => {
                                                 <div className="flex items-center gap-2">
                                                     <p className="text-white font-medium">{income.description}</p>
                                                     {income.bookingId && (
-                                                        <span className="text-xs px-2 py-0.5 bg-emerald-900/50 rounded text-emerald-300">
+                                                        <span className="text-xs px-2 py-0.5 bg-amber-900/50 rounded text-amber-300">
                                                             🔗 Reserva
                                                         </span>
                                                     )}
                                                 </div>
-                                                <p className="text-xs text-slate-500">
+                                                <p className="text-xs text-stone-500">
                                                     {formatDate(income.date.toDate())} • {
                                                         income.category === 'rental' ? 'Alquiler' :
                                                             income.category === 'deposit' ? 'Seña' : 'Otro'
@@ -348,11 +348,11 @@ export const FinancesPage: React.FC = () => {
                                                 </p>
                                             </div>
                                             <div className="text-right">
-                                                <p className="text-emerald-400 font-semibold">
+                                                <p className="text-amber-400 font-semibold">
                                                     +R$ {income.amountBRL.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
                                                 </p>
                                                 {rates && (
-                                                    <p className="text-xs text-slate-500">
+                                                    <p className="text-xs text-stone-500">
                                                         ≈ ${convertToARS(income.amountBRL)?.toLocaleString('es-AR', { maximumFractionDigits: 0 })} ARS
                                                     </p>
                                                 )}
@@ -367,13 +367,13 @@ export const FinancesPage: React.FC = () => {
                     {/* Expenses Tab */}
                     {activeTab === 'expenses' && (
                         filteredExpenses.length === 0 ? (
-                            <p className="text-slate-500 text-center py-12">No hay gastos registrados</p>
+                            <p className="text-stone-500 text-center py-12">No hay gastos registrados</p>
                         ) : (
-                            <div className="divide-y divide-slate-700/50">
+                            <div className="divide-y divide-stone-700/50">
                                 {filteredExpenses.map((expense) => (
                                     <div
                                         key={expense.id}
-                                        className="p-4 hover:bg-slate-700/30 cursor-pointer transition-colors"
+                                        className="p-4 hover:bg-stone-700/30 cursor-pointer transition-colors"
                                         onClick={() => {
                                             setSelectedExpense(expense);
                                             setModalType('expense');
@@ -384,10 +384,10 @@ export const FinancesPage: React.FC = () => {
                                             <div>
                                                 <p className="text-white font-medium">{expense.description}</p>
                                                 <div className="flex items-center gap-2">
-                                                    <span className="text-xs px-2 py-0.5 bg-slate-700 rounded text-slate-300">
+                                                    <span className="text-xs px-2 py-0.5 bg-stone-700 rounded text-stone-300">
                                                         {EXPENSE_CATEGORIES[expense.category]}
                                                     </span>
-                                                    <span className="text-xs text-slate-500">
+                                                    <span className="text-xs text-stone-500">
                                                         {formatDate(expense.date.toDate())}
                                                     </span>
                                                     {expense.isRecurring && (
@@ -399,7 +399,7 @@ export const FinancesPage: React.FC = () => {
                                                 <p className="text-red-400 font-semibold">
                                                     -R$ {expense.amountBRL.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
                                                 </p>
-                                                <span className={`text-xs ${expense.isPaid ? 'text-emerald-400' : 'text-amber-400'}`}>
+                                                <span className={`text-xs ${expense.isPaid ? 'text-amber-400' : 'text-amber-400'}`}>
                                                     {expense.isPaid ? '✓ Pagado' : 'Pendiente'}
                                                 </span>
                                             </div>
@@ -413,19 +413,19 @@ export const FinancesPage: React.FC = () => {
                     {/* Pending Expenses Tab */}
                     {activeTab === 'pending-expenses' && (
                         pendingExpenses.length === 0 ? (
-                            <p className="text-slate-500 text-center py-12">No hay gastos pendientes de pago 🎉</p>
+                            <p className="text-stone-500 text-center py-12">No hay gastos pendientes de pago 🎉</p>
                         ) : (
-                            <div className="divide-y divide-slate-700/50">
+                            <div className="divide-y divide-stone-700/50">
                                 {pendingExpenses.map((expense) => (
                                     <div
                                         key={expense.id}
-                                        className="p-4 hover:bg-slate-700/30 transition-colors"
+                                        className="p-4 hover:bg-stone-700/30 transition-colors"
                                     >
                                         <div className="flex items-center justify-between">
                                             <div>
                                                 <p className="text-white font-medium">{expense.description}</p>
                                                 <div className="flex items-center gap-2">
-                                                    <span className="text-xs px-2 py-0.5 bg-slate-700 rounded text-slate-300">
+                                                    <span className="text-xs px-2 py-0.5 bg-stone-700 rounded text-stone-300">
                                                         {EXPENSE_CATEGORIES[expense.category]}
                                                     </span>
                                                     {expense.dueDate && (
@@ -446,7 +446,7 @@ export const FinancesPage: React.FC = () => {
                                                         e.stopPropagation();
                                                         handleMarkAsPaid(expense);
                                                     }}
-                                                    className="px-3 py-1 bg-emerald-600 hover:bg-emerald-500 text-white text-sm rounded-lg transition-colors"
+                                                    className="px-3 py-1 bg-amber-600 hover:bg-amber-500 text-white text-sm rounded-lg transition-colors"
                                                 >
                                                     Marcar pagado
                                                 </button>
@@ -461,13 +461,13 @@ export const FinancesPage: React.FC = () => {
                     {/* Pending Income (from confirmed bookings) */}
                     {activeTab === 'pending-income' && (
                         pendingIncomeFromBookings.length === 0 ? (
-                            <p className="text-slate-500 text-center py-12">No hay ingresos pendientes de check-in</p>
+                            <p className="text-stone-500 text-center py-12">No hay ingresos pendientes de check-in</p>
                         ) : (
-                            <div className="divide-y divide-slate-700/50">
+                            <div className="divide-y divide-stone-700/50">
                                 {pendingIncomeFromBookings.map((item) => (
                                     <div
                                         key={item.booking.id}
-                                        className="p-4 hover:bg-slate-700/30 transition-colors"
+                                        className="p-4 hover:bg-stone-700/30 transition-colors"
                                     >
                                         <div className="flex items-center justify-between">
                                             <div>
@@ -478,7 +478,7 @@ export const FinancesPage: React.FC = () => {
                                                     <span className="text-xs px-2 py-0.5 bg-amber-900/50 rounded text-amber-300">
                                                         ⏰ Check-in: {formatDate(item.checkIn.toDate())}
                                                     </span>
-                                                    <span className="text-xs text-slate-500">
+                                                    <span className="text-xs text-stone-500">
                                                         Seña pagada
                                                     </span>
                                                 </div>
@@ -488,7 +488,7 @@ export const FinancesPage: React.FC = () => {
                                                     R$ {item.remainingAmount.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
                                                 </p>
                                                 {rates && (
-                                                    <p className="text-xs text-slate-500">
+                                                    <p className="text-xs text-stone-500">
                                                         ≈ ${convertToARS(item.remainingAmount)?.toLocaleString('es-AR', { maximumFractionDigits: 0 })} ARS
                                                     </p>
                                                 )}
@@ -504,9 +504,9 @@ export const FinancesPage: React.FC = () => {
                     {activeTab === 'projected' && (
                         <div>
                             {/* Header with add button */}
-                            <div className="p-4 border-b border-slate-700/50 flex items-center justify-between">
+                            <div className="p-4 border-b border-stone-700/50 flex items-center justify-between">
                                 <div>
-                                    <p className="text-sm text-slate-400">Total pendiente</p>
+                                    <p className="text-sm text-stone-400">Total pendiente</p>
                                     <p className="text-xl font-bold text-amber-400">
                                         {getTotalPendingUSDT().toLocaleString('en-US', { minimumFractionDigits: 2 })} USDT
                                     </p>
@@ -524,13 +524,13 @@ export const FinancesPage: React.FC = () => {
                             </div>
 
                             {projectedExpenses.length === 0 ? (
-                                <p className="text-slate-500 text-center py-12">No hay gastos proyectados</p>
+                                <p className="text-stone-500 text-center py-12">No hay gastos proyectados</p>
                             ) : (
-                                <div className="divide-y divide-slate-700/50">
+                                <div className="divide-y divide-stone-700/50">
                                     {projectedExpenses.map((proj) => (
                                         <div
                                             key={proj.id}
-                                            className="p-4 hover:bg-slate-700/30 cursor-pointer transition-colors"
+                                            className="p-4 hover:bg-stone-700/30 cursor-pointer transition-colors"
                                             onClick={() => {
                                                 setSelectedProjectedExpense(proj);
                                                 setModalType('projected');
@@ -543,16 +543,16 @@ export const FinancesPage: React.FC = () => {
                                                         <p className="text-white font-medium">{proj.title}</p>
                                                         <span className={`text-xs px-2 py-0.5 rounded ${proj.priority === 'alta' ? 'bg-red-900/50 text-red-300' :
                                                             proj.priority === 'media' ? 'bg-amber-900/50 text-amber-300' :
-                                                                'bg-slate-700 text-slate-300'
+                                                                'bg-stone-700 text-stone-300'
                                                             }`}>
                                                             {proj.priority}
                                                         </span>
                                                     </div>
                                                     <div className="flex items-center gap-2 mt-1">
-                                                        <span className="text-xs px-2 py-0.5 bg-slate-700 rounded text-slate-300">
+                                                        <span className="text-xs px-2 py-0.5 bg-stone-700 rounded text-stone-300">
                                                             {PROJECTED_EXPENSE_CATEGORIES[proj.category]}
                                                         </span>
-                                                        <span className={`text-xs ${proj.status === 'pendiente' ? 'text-amber-400' : 'text-emerald-400'}`}>
+                                                        <span className={`text-xs ${proj.status === 'pendiente' ? 'text-amber-400' : 'text-amber-400'}`}>
                                                             {proj.status === 'pendiente' ? '⏳ Pendiente' : '✓ Comprado'}
                                                         </span>
                                                     </div>
@@ -562,7 +562,7 @@ export const FinancesPage: React.FC = () => {
                                                         {proj.estimatedAmountUSDT.toLocaleString('en-US', { minimumFractionDigits: 2 })} USDT
                                                     </p>
                                                     {proj.targetDate && (
-                                                        <p className="text-xs text-slate-500">
+                                                        <p className="text-xs text-stone-500">
                                                             Meta: {formatDate(proj.targetDate.toDate())}
                                                         </p>
                                                     )}
@@ -580,7 +580,7 @@ export const FinancesPage: React.FC = () => {
             {/* Modal */}
             {showModal && (
                 <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center p-4 z-50">
-                    <div className="bg-slate-800 rounded-2xl border border-slate-700 w-full max-w-md max-h-[90vh] overflow-y-auto">
+                    <div className="bg-stone-800 rounded-2xl border border-stone-700 w-full max-w-md max-h-[90vh] overflow-y-auto">
                         <div className="p-6">
                             <div className="flex items-center justify-between mb-6">
                                 <h3 className="text-xl font-semibold text-white">
@@ -597,7 +597,7 @@ export const FinancesPage: React.FC = () => {
                                         setSelectedIncome(null);
                                         setSelectedExpense(null);
                                     }}
-                                    className="text-slate-400 hover:text-white"
+                                    className="text-stone-400 hover:text-white"
                                 >
                                     ✕
                                 </button>

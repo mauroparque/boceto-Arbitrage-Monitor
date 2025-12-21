@@ -14,7 +14,7 @@ interface ProjectedExpenseFormProps {
 const PRIORITIES = [
     { value: 'alta', label: 'Alta', color: 'text-red-400' },
     { value: 'media', label: 'Media', color: 'text-amber-400' },
-    { value: 'baja', label: 'Baja', color: 'text-slate-400' },
+    { value: 'baja', label: 'Baja', color: 'text-stone-400' },
 ] as const;
 
 export const ProjectedExpenseForm: React.FC<ProjectedExpenseFormProps> = ({
@@ -85,24 +85,24 @@ export const ProjectedExpenseForm: React.FC<ProjectedExpenseFormProps> = ({
 
             {/* Title */}
             <div>
-                <label className="block text-sm text-slate-400 mb-1">¿Qué querés comprar/pagar? *</label>
+                <label className="block text-sm text-stone-400 mb-1">¿Qué querés comprar/pagar? *</label>
                 <input
                     type="text"
                     value={title}
                     onChange={(e) => setTitle(e.target.value)}
-                    className="w-full px-3 py-2 bg-slate-900/50 border border-slate-700 rounded-lg text-white focus:outline-none focus:border-amber-500"
+                    className="w-full px-3 py-2 bg-stone-900/50 border border-stone-700 rounded-lg text-white focus:outline-none focus:border-amber-500"
                     placeholder="Ej: TV nueva, arreglo del baño..."
                 />
             </div>
 
             {/* Amount USDT */}
             <div>
-                <label className="block text-sm text-slate-400 mb-1">Monto estimado (USDT) *</label>
+                <label className="block text-sm text-stone-400 mb-1">Monto estimado (USDT) *</label>
                 <input
                     type="number"
                     value={estimatedAmountUSDT}
                     onChange={(e) => setEstimatedAmountUSDT(e.target.value)}
-                    className="w-full px-3 py-2 bg-slate-900/50 border border-slate-700 rounded-lg text-white focus:outline-none focus:border-amber-500"
+                    className="w-full px-3 py-2 bg-stone-900/50 border border-stone-700 rounded-lg text-white focus:outline-none focus:border-amber-500"
                     placeholder="0.00"
                     step="0.01"
                 />
@@ -110,11 +110,11 @@ export const ProjectedExpenseForm: React.FC<ProjectedExpenseFormProps> = ({
 
             {/* Category */}
             <div>
-                <label className="block text-sm text-slate-400 mb-1">Categoría *</label>
+                <label className="block text-sm text-stone-400 mb-1">Categoría *</label>
                 <select
                     value={category}
                     onChange={(e) => setCategory(e.target.value as ProjectedExpenseCategory)}
-                    className="w-full px-3 py-2 bg-slate-900/50 border border-slate-700 rounded-lg text-white focus:outline-none focus:border-amber-500"
+                    className="w-full px-3 py-2 bg-stone-900/50 border border-stone-700 rounded-lg text-white focus:outline-none focus:border-amber-500"
                 >
                     {Object.entries(PROJECTED_EXPENSE_CATEGORIES).map(([key, label]) => (
                         <option key={key} value={key}>{label}</option>
@@ -124,7 +124,7 @@ export const ProjectedExpenseForm: React.FC<ProjectedExpenseFormProps> = ({
 
             {/* Priority */}
             <div>
-                <label className="block text-sm text-slate-400 mb-1">Prioridad</label>
+                <label className="block text-sm text-stone-400 mb-1">Prioridad</label>
                 <div className="flex gap-2">
                     {PRIORITIES.map((p) => (
                         <button
@@ -132,8 +132,8 @@ export const ProjectedExpenseForm: React.FC<ProjectedExpenseFormProps> = ({
                             type="button"
                             onClick={() => setPriority(p.value)}
                             className={`flex-1 px-3 py-2 rounded-lg border transition-colors ${priority === p.value
-                                    ? 'bg-slate-700 border-amber-500'
-                                    : 'bg-slate-900/50 border-slate-700 hover:border-slate-600'
+                                    ? 'bg-stone-700 border-amber-500'
+                                    : 'bg-stone-900/50 border-stone-700 hover:border-stone-600'
                                 }`}
                         >
                             <span className={p.color}>{p.label}</span>
@@ -144,22 +144,22 @@ export const ProjectedExpenseForm: React.FC<ProjectedExpenseFormProps> = ({
 
             {/* Target Date */}
             <div>
-                <label className="block text-sm text-slate-400 mb-1">Fecha objetivo (opcional)</label>
+                <label className="block text-sm text-stone-400 mb-1">Fecha objetivo (opcional)</label>
                 <input
                     type="date"
                     value={targetDate}
                     onChange={(e) => setTargetDate(e.target.value)}
-                    className="w-full px-3 py-2 bg-slate-900/50 border border-slate-700 rounded-lg text-white focus:outline-none focus:border-amber-500"
+                    className="w-full px-3 py-2 bg-stone-900/50 border border-stone-700 rounded-lg text-white focus:outline-none focus:border-amber-500"
                 />
             </div>
 
             {/* Notes */}
             <div>
-                <label className="block text-sm text-slate-400 mb-1">Notas (opcional)</label>
+                <label className="block text-sm text-stone-400 mb-1">Notas (opcional)</label>
                 <textarea
                     value={notes}
                     onChange={(e) => setNotes(e.target.value)}
-                    className="w-full px-3 py-2 bg-slate-900/50 border border-slate-700 rounded-lg text-white focus:outline-none focus:border-amber-500 resize-none"
+                    className="w-full px-3 py-2 bg-stone-900/50 border border-stone-700 rounded-lg text-white focus:outline-none focus:border-amber-500 resize-none"
                     rows={2}
                     placeholder="Notas adicionales..."
                 />
@@ -170,7 +170,7 @@ export const ProjectedExpenseForm: React.FC<ProjectedExpenseFormProps> = ({
                 <button
                     type="button"
                     onClick={onCancel}
-                    className="flex-1 px-4 py-2 bg-slate-700 hover:bg-slate-600 text-white rounded-lg transition-colors"
+                    className="flex-1 px-4 py-2 bg-stone-700 hover:bg-stone-600 text-white rounded-lg transition-colors"
                     disabled={isLoading}
                 >
                     Cancelar
@@ -193,7 +193,7 @@ export const ProjectedExpenseForm: React.FC<ProjectedExpenseFormProps> = ({
                             <button
                                 type="button"
                                 onClick={() => setShowDeleteConfirm(false)}
-                                className="flex-1 px-3 py-1.5 bg-slate-700 hover:bg-slate-600 text-white text-sm rounded-lg"
+                                className="flex-1 px-3 py-1.5 bg-stone-700 hover:bg-stone-600 text-white text-sm rounded-lg"
                                 disabled={isLoading}
                             >
                                 Cancelar

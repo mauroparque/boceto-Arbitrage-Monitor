@@ -155,12 +155,12 @@ export const BookingForm: React.FC<BookingFormProps> = ({
 
             {/* Guest Name (Optional) */}
             <div>
-                <label className="block text-sm text-slate-400 mb-1">Nombre del huésped (opcional)</label>
+                <label className="block text-sm text-stone-400 mb-1">Nombre del huésped (opcional)</label>
                 <input
                     type="text"
                     value={guestName}
                     onChange={(e) => setGuestName(e.target.value)}
-                    className="w-full px-3 py-2 bg-slate-900/50 border border-slate-700 rounded-lg text-white focus:outline-none focus:border-emerald-500"
+                    className="w-full px-3 py-2 bg-stone-900/50 border border-stone-700 rounded-lg text-white focus:outline-none focus:border-amber-500"
                     placeholder="Si lo conocés"
                 />
             </div>
@@ -168,28 +168,28 @@ export const BookingForm: React.FC<BookingFormProps> = ({
             {/* Dates */}
             <div className="grid grid-cols-2 gap-4">
                 <div>
-                    <label className="block text-sm text-slate-400 mb-1">Check-in *</label>
+                    <label className="block text-sm text-stone-400 mb-1">Check-in *</label>
                     <input
                         type="date"
                         value={checkIn}
                         onChange={(e) => setCheckIn(e.target.value)}
-                        className="w-full px-3 py-2 bg-slate-900/50 border border-slate-700 rounded-lg text-white focus:outline-none focus:border-emerald-500"
+                        className="w-full px-3 py-2 bg-stone-900/50 border border-stone-700 rounded-lg text-white focus:outline-none focus:border-amber-500"
                     />
                 </div>
                 <div>
-                    <label className="block text-sm text-slate-400 mb-1">Check-out *</label>
+                    <label className="block text-sm text-stone-400 mb-1">Check-out *</label>
                     <input
                         type="date"
                         value={checkOut}
                         onChange={(e) => setCheckOut(e.target.value)}
-                        className="w-full px-3 py-2 bg-slate-900/50 border border-slate-700 rounded-lg text-white focus:outline-none focus:border-emerald-500"
+                        className="w-full px-3 py-2 bg-stone-900/50 border border-stone-700 rounded-lg text-white focus:outline-none focus:border-amber-500"
                     />
                 </div>
             </div>
 
             {/* Rental Type */}
             <div>
-                <label className="block text-sm text-slate-400 mb-1">Tipo de alquiler *</label>
+                <label className="block text-sm text-stone-400 mb-1">Tipo de alquiler *</label>
                 <div className="grid grid-cols-2 gap-2">
                     {RENTAL_TYPES.map((type) => (
                         <button
@@ -197,8 +197,8 @@ export const BookingForm: React.FC<BookingFormProps> = ({
                             type="button"
                             onClick={() => setRentalType(type.value as RentalType)}
                             className={`px-3 py-2 rounded-lg text-sm font-medium transition-colors ${rentalType === type.value
-                                ? 'bg-emerald-600 text-white'
-                                : 'bg-slate-700 text-slate-300 hover:bg-slate-600'
+                                ? 'bg-amber-600 text-white'
+                                : 'bg-stone-700 text-stone-300 hover:bg-stone-600'
                                 }`}
                         >
                             {type.label}
@@ -210,9 +210,9 @@ export const BookingForm: React.FC<BookingFormProps> = ({
             {/* Rate based on type */}
             {rentalType === 'daily' ? (
                 <div>
-                    <label className="block text-sm text-slate-400 mb-1">
+                    <label className="block text-sm text-stone-400 mb-1">
                         Valor por noche (BRL) *
-                        <span className="text-xs text-slate-500 ml-2">
+                        <span className="text-xs text-stone-500 ml-2">
                             {nights > 0 && `${nights} ${nights === 1 ? 'noche' : 'noches'}`}
                         </span>
                     </label>
@@ -220,16 +220,16 @@ export const BookingForm: React.FC<BookingFormProps> = ({
                         type="number"
                         value={dailyRate}
                         onChange={(e) => setDailyRate(e.target.value)}
-                        className="w-full px-3 py-2 bg-slate-900/50 border border-slate-700 rounded-lg text-white focus:outline-none focus:border-emerald-500"
+                        className="w-full px-3 py-2 bg-stone-900/50 border border-stone-700 rounded-lg text-white focus:outline-none focus:border-amber-500"
                         placeholder="0.00"
                         step="0.01"
                     />
                 </div>
             ) : (
                 <div>
-                    <label className="block text-sm text-slate-400 mb-1">
+                    <label className="block text-sm text-stone-400 mb-1">
                         Valor mensual (BRL) *
-                        <span className="text-xs text-slate-500 ml-2">
+                        <span className="text-xs text-stone-500 ml-2">
                             {months > 0 && `${months} ${months === 1 ? 'mes' : 'meses'}`}
                         </span>
                     </label>
@@ -237,7 +237,7 @@ export const BookingForm: React.FC<BookingFormProps> = ({
                         type="number"
                         value={monthlyRate}
                         onChange={(e) => setMonthlyRate(e.target.value)}
-                        className="w-full px-3 py-2 bg-slate-900/50 border border-slate-700 rounded-lg text-white focus:outline-none focus:border-emerald-500"
+                        className="w-full px-3 py-2 bg-stone-900/50 border border-stone-700 rounded-lg text-white focus:outline-none focus:border-amber-500"
                         placeholder="0.00"
                         step="0.01"
                     />
@@ -246,27 +246,27 @@ export const BookingForm: React.FC<BookingFormProps> = ({
 
             {/* Calculated Total and Deposit */}
             {totalBRL > 0 && (
-                <div className="bg-emerald-900/30 border border-emerald-500/30 rounded-lg p-4 space-y-3">
+                <div className="bg-amber-900/30 border border-amber-500/30 rounded-lg p-4 space-y-3">
                     <div>
-                        <p className="text-sm text-emerald-300 mb-1">Total</p>
-                        <p className="text-2xl font-bold text-emerald-400">
+                        <p className="text-sm text-amber-300 mb-1">Total</p>
+                        <p className="text-2xl font-bold text-amber-400">
                             R$ {totalBRL.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
                         </p>
                     </div>
-                    <div className="border-t border-emerald-500/20 pt-3 grid grid-cols-2 gap-4">
+                    <div className="border-t border-amber-500/20 pt-3 grid grid-cols-2 gap-4">
                         <div>
                             <p className="text-xs text-amber-300">Seña (30%)</p>
                             <p className="text-lg font-semibold text-amber-400">
                                 R$ {depositAmount.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
                             </p>
-                            <p className="text-xs text-slate-500">Al confirmar</p>
+                            <p className="text-xs text-stone-500">Al confirmar</p>
                         </div>
                         <div>
-                            <p className="text-xs text-slate-400">Restante (70%)</p>
+                            <p className="text-xs text-stone-400">Restante (70%)</p>
                             <p className="text-lg font-semibold text-white">
                                 R$ {remainingAmount.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
                             </p>
-                            <p className="text-xs text-slate-500">En check-in</p>
+                            <p className="text-xs text-stone-500">En check-in</p>
                         </div>
                     </div>
                 </div>
@@ -274,11 +274,11 @@ export const BookingForm: React.FC<BookingFormProps> = ({
 
             {/* Platform */}
             <div>
-                <label className="block text-sm text-slate-400 mb-1">Plataforma</label>
+                <label className="block text-sm text-stone-400 mb-1">Plataforma</label>
                 <select
                     value={platform}
                     onChange={(e) => setPlatform(e.target.value as BookingFormData['platform'])}
-                    className="w-full px-3 py-2 bg-slate-900/50 border border-slate-700 rounded-lg text-white focus:outline-none focus:border-emerald-500"
+                    className="w-full px-3 py-2 bg-stone-900/50 border border-stone-700 rounded-lg text-white focus:outline-none focus:border-amber-500"
                 >
                     {PLATFORMS.map((p) => (
                         <option key={p.value} value={p.value}>{p.label}</option>
@@ -288,11 +288,11 @@ export const BookingForm: React.FC<BookingFormProps> = ({
 
             {/* Status */}
             <div>
-                <label className="block text-sm text-slate-400 mb-1">Estado</label>
+                <label className="block text-sm text-stone-400 mb-1">Estado</label>
                 <select
                     value={status}
                     onChange={(e) => setStatus(e.target.value as BookingFormData['status'])}
-                    className="w-full px-3 py-2 bg-slate-900/50 border border-slate-700 rounded-lg text-white focus:outline-none focus:border-emerald-500"
+                    className="w-full px-3 py-2 bg-stone-900/50 border border-stone-700 rounded-lg text-white focus:outline-none focus:border-amber-500"
                 >
                     {STATUSES.map((s) => (
                         <option key={s.value} value={s.value}>{s.label}</option>
@@ -302,11 +302,11 @@ export const BookingForm: React.FC<BookingFormProps> = ({
 
             {/* Notes */}
             <div>
-                <label className="block text-sm text-slate-400 mb-1">Notas</label>
+                <label className="block text-sm text-stone-400 mb-1">Notas</label>
                 <textarea
                     value={notes}
                     onChange={(e) => setNotes(e.target.value)}
-                    className="w-full px-3 py-2 bg-slate-900/50 border border-slate-700 rounded-lg text-white focus:outline-none focus:border-emerald-500 resize-none"
+                    className="w-full px-3 py-2 bg-stone-900/50 border border-stone-700 rounded-lg text-white focus:outline-none focus:border-amber-500 resize-none"
                     rows={3}
                     placeholder="Notas adicionales..."
                 />
@@ -317,14 +317,14 @@ export const BookingForm: React.FC<BookingFormProps> = ({
                 <button
                     type="button"
                     onClick={onCancel}
-                    className="flex-1 px-4 py-2 bg-slate-700 hover:bg-slate-600 text-white rounded-lg transition-colors"
+                    className="flex-1 px-4 py-2 bg-stone-700 hover:bg-stone-600 text-white rounded-lg transition-colors"
                     disabled={isLoading}
                 >
                     Cancelar
                 </button>
                 <button
                     type="submit"
-                    className="flex-1 px-4 py-2 bg-emerald-600 hover:bg-emerald-500 text-white rounded-lg transition-colors disabled:opacity-50"
+                    className="flex-1 px-4 py-2 bg-amber-600 hover:bg-amber-500 text-white rounded-lg transition-colors disabled:opacity-50"
                     disabled={isLoading}
                 >
                     {isLoading ? 'Guardando...' : 'Guardar'}

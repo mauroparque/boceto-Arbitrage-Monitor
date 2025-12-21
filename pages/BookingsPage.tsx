@@ -15,7 +15,7 @@ const STATUS_LABELS: Record<Booking['status'], string> = {
 
 const STATUS_COLORS: Record<Booking['status'], string> = {
     pending: 'bg-amber-900/50 text-amber-300',
-    confirmed: 'bg-emerald-900/50 text-emerald-300',
+    confirmed: 'bg-amber-900/50 text-amber-300',
     completed: 'bg-blue-900/50 text-blue-300',
     cancelled: 'bg-red-900/50 text-red-300',
 };
@@ -97,7 +97,7 @@ export const BookingsPage: React.FC = () => {
 
     if (isLoading) {
         return (
-            <div className="flex items-center justify-center h-64 text-slate-400">
+            <div className="flex items-center justify-center h-64 text-stone-400">
                 Cargando reservas...
             </div>
         );
@@ -109,44 +109,44 @@ export const BookingsPage: React.FC = () => {
             <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
                 <div>
                     <h2 className="text-2xl font-bold text-white">Reservas</h2>
-                    <p className="text-slate-400 text-sm">Gestión de reservas</p>
+                    <p className="text-stone-400 text-sm">Gestión de reservas</p>
                 </div>
             </div>
 
             {/* Stats Cards */}
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                <div className="bg-slate-800/50 rounded-xl p-4 border border-slate-700/50">
-                    <p className="text-xs text-slate-500 mb-1">Total reservas</p>
+                <div className="bg-stone-800/50 rounded-xl p-4 border border-stone-700/50">
+                    <p className="text-xs text-stone-500 mb-1">Total reservas</p>
                     <p className="text-2xl font-bold text-white">{stats.total}</p>
                 </div>
-                <div className="bg-slate-800/50 rounded-xl p-4 border border-amber-500/30">
-                    <p className="text-xs text-slate-500 mb-1">Pendientes</p>
+                <div className="bg-stone-800/50 rounded-xl p-4 border border-amber-500/30">
+                    <p className="text-xs text-stone-500 mb-1">Pendientes</p>
                     <p className="text-2xl font-bold text-amber-400">{stats.pending}</p>
                 </div>
-                <div className="bg-slate-800/50 rounded-xl p-4 border border-emerald-500/30">
-                    <p className="text-xs text-slate-500 mb-1">Confirmadas</p>
-                    <p className="text-2xl font-bold text-emerald-400">{stats.confirmed}</p>
+                <div className="bg-stone-800/50 rounded-xl p-4 border border-amber-500/30">
+                    <p className="text-xs text-stone-500 mb-1">Confirmadas</p>
+                    <p className="text-2xl font-bold text-amber-400">{stats.confirmed}</p>
                 </div>
-                <div className="bg-slate-800/50 rounded-xl p-4 border border-blue-500/30">
-                    <p className="text-xs text-slate-500 mb-1">Completadas</p>
+                <div className="bg-stone-800/50 rounded-xl p-4 border border-blue-500/30">
+                    <p className="text-xs text-stone-500 mb-1">Completadas</p>
                     <p className="text-2xl font-bold text-blue-400">{stats.completed}</p>
                 </div>
             </div>
 
             {/* Filter Tabs */}
-            <div className="flex flex-wrap gap-2 bg-slate-800/50 p-1 rounded-lg w-fit">
+            <div className="flex flex-wrap gap-2 bg-stone-800/50 p-1 rounded-lg w-fit">
                 {statusFilters.map((filter) => (
                     <button
                         key={filter.id}
                         onClick={() => setStatusFilter(filter.id)}
                         className={`px-4 py-2 rounded-md text-sm font-medium transition-colors flex items-center gap-2 ${statusFilter === filter.id
-                            ? 'bg-slate-700 text-white'
-                            : 'text-slate-400 hover:text-white'
+                            ? 'bg-stone-700 text-white'
+                            : 'text-stone-400 hover:text-white'
                             }`}
                     >
                         {filter.label}
                         {filter.count !== undefined && filter.count > 0 && (
-                            <span className="px-1.5 py-0.5 text-xs bg-slate-600 rounded-full">
+                            <span className="px-1.5 py-0.5 text-xs bg-stone-600 rounded-full">
                                 {filter.count}
                             </span>
                         )}
@@ -155,15 +155,15 @@ export const BookingsPage: React.FC = () => {
             </div>
 
             {/* Bookings List */}
-            <div className="bg-slate-800/50 backdrop-blur-xl rounded-xl border border-slate-700/50 overflow-hidden">
+            <div className="bg-stone-800/50 backdrop-blur-xl rounded-xl border border-stone-700/50 overflow-hidden">
                 {filteredBookings.length === 0 ? (
-                    <p className="text-slate-500 text-center py-12">No hay reservas</p>
+                    <p className="text-stone-500 text-center py-12">No hay reservas</p>
                 ) : (
-                    <div className="divide-y divide-slate-700/50">
+                    <div className="divide-y divide-stone-700/50">
                         {filteredBookings.map((booking) => (
                             <div
                                 key={booking.id}
-                                className="p-4 hover:bg-slate-700/30 transition-colors"
+                                className="p-4 hover:bg-stone-700/30 transition-colors"
                             >
                                 <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                                     <div className="flex-1">
@@ -175,7 +175,7 @@ export const BookingsPage: React.FC = () => {
                                                 {STATUS_LABELS[booking.status]}
                                             </span>
                                         </div>
-                                        <div className="flex flex-wrap items-center gap-3 text-sm text-slate-400">
+                                        <div className="flex flex-wrap items-center gap-3 text-sm text-stone-400">
                                             <span>📅 {formatDate(booking.checkIn.toDate())} → {formatDate(booking.checkOut.toDate())}</span>
                                             <span>•</span>
                                             <span>{booking.nights || booking.months} {booking.rentalType === 'daily' ? 'noches' : 'meses'}</span>
@@ -191,7 +191,7 @@ export const BookingsPage: React.FC = () => {
                                                 R$ {booking.totalBRL.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
                                             </p>
                                             {rates && (
-                                                <p className="text-xs text-slate-500">
+                                                <p className="text-xs text-stone-500">
                                                     ≈ ${convertToARS(booking.totalBRL)?.toLocaleString('es-AR', { maximumFractionDigits: 0 })} ARS
                                                 </p>
                                             )}
@@ -207,7 +207,7 @@ export const BookingsPage: React.FC = () => {
                                             <button
                                                 onClick={() => handleConfirmBooking(booking)}
                                                 disabled={isConfirming === booking.id}
-                                                className="px-4 py-2 bg-amber-600 hover:bg-amber-500 disabled:bg-slate-600 text-white text-sm font-medium rounded-lg transition-colors whitespace-nowrap"
+                                                className="px-4 py-2 bg-amber-600 hover:bg-amber-500 disabled:bg-stone-600 text-white text-sm font-medium rounded-lg transition-colors whitespace-nowrap"
                                             >
                                                 {isConfirming === booking.id ? 'Procesando...' : '✓ Confirmar'}
                                             </button>
@@ -218,7 +218,7 @@ export const BookingsPage: React.FC = () => {
                                             <button
                                                 onClick={() => handleCompleteBooking(booking)}
                                                 disabled={isCompleting === booking.id}
-                                                className="px-4 py-2 bg-emerald-600 hover:bg-emerald-500 disabled:bg-slate-600 text-white text-sm font-medium rounded-lg transition-colors whitespace-nowrap"
+                                                className="px-4 py-2 bg-amber-600 hover:bg-amber-500 disabled:bg-stone-600 text-white text-sm font-medium rounded-lg transition-colors whitespace-nowrap"
                                             >
                                                 {isCompleting === booking.id ? 'Procesando...' : '✓ Completar'}
                                             </button>

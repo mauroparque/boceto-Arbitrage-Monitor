@@ -90,27 +90,26 @@ export const CalendarMonthView: React.FC<CalendarMonthViewProps> = ({
     // Get status-based styling
     const getStatusStyle = (booking: Booking, type: string) => {
         const isConfirmed = booking.status === 'confirmed' || booking.status === 'completed';
-        const isPending = booking.status === 'pending';
 
         if (type === 'checkout') {
             return isConfirmed
-                ? 'bg-amber-600/60 text-amber-100 border-l-2 border-amber-400'
-                : 'bg-amber-600/30 text-amber-200 border-l-2 border-dashed border-amber-500';
+                ? 'bg-orange-600/60 text-orange-100 border-l-2 border-orange-400'
+                : 'bg-orange-600/30 text-orange-200 border-l-2 border-dashed border-orange-400';
         }
         if (type === 'checkin') {
             return isConfirmed
-                ? 'bg-emerald-600/60 text-emerald-100 border-l-2 border-emerald-400'
-                : 'bg-emerald-600/30 text-emerald-200 border-l-2 border-dashed border-emerald-500';
+                ? 'bg-teal-600/60 text-teal-100 border-l-2 border-teal-400'
+                : 'bg-teal-600/30 text-teal-200 border-l-2 border-dashed border-teal-400';
         }
         if (type === 'full') {
             return isConfirmed
                 ? 'bg-blue-600/60 text-blue-100 border-l-2 border-blue-400'
-                : 'bg-blue-600/30 text-blue-200 border-l-2 border-dashed border-blue-500';
+                : 'bg-blue-600/30 text-blue-200 border-l-2 border-dashed border-blue-400';
         }
-        // middle - días intermedios con fondo sólido para continuidad visual
+        // middle - días intermedios
         return isConfirmed
-            ? 'bg-purple-600/50 text-purple-100'
-            : 'bg-purple-600/30 text-purple-200 border-dashed border-purple-500';
+            ? 'bg-violet-600/50 text-violet-100'
+            : 'bg-violet-600/30 text-violet-200 border-l-2 border-dashed border-violet-400';
     };
 
     const getBookingLabel = (booking: Booking) => {
@@ -119,11 +118,11 @@ export const CalendarMonthView: React.FC<CalendarMonthViewProps> = ({
     };
 
     return (
-        <div className="bg-slate-800/50 rounded-xl border border-slate-700/50 overflow-hidden">
+        <div className="bg-stone-800/50 rounded-xl border border-stone-700/50 overflow-hidden">
             {/* Days of week header */}
-            <div className="grid grid-cols-7 bg-slate-900/50">
+            <div className="grid grid-cols-7 bg-stone-900/50">
                 {DAYS_OF_WEEK.map((day) => (
-                    <div key={day} className="p-2 text-center text-xs font-medium text-slate-500 uppercase">
+                    <div key={day} className="p-2 text-center text-xs font-medium text-stone-500 uppercase">
                         {day}
                     </div>
                 ))}
@@ -133,7 +132,7 @@ export const CalendarMonthView: React.FC<CalendarMonthViewProps> = ({
             <div className="grid grid-cols-7">
                 {calendarDays.map((day, index) => {
                     if (day === null) {
-                        return <div key={`empty-${index}`} className="p-2 min-h-[100px] bg-slate-900/30" />;
+                        return <div key={`empty-${index}`} className="p-2 min-h-[100px] bg-stone-900/30" />;
                     }
 
                     const dayBookings = getBookingsForDay(day);
@@ -144,7 +143,7 @@ export const CalendarMonthView: React.FC<CalendarMonthViewProps> = ({
                     return (
                         <div
                             key={day}
-                            className={`min-h-[100px] border-t border-l border-slate-700/30 cursor-pointer transition-colors hover:bg-slate-700/20 flex flex-col ${isToday(day) ? 'bg-emerald-900/20' : ''
+                            className={`min-h-[100px] border-t border-l border-stone-700/30 cursor-pointer transition-colors hover:bg-stone-700/20 flex flex-col ${isToday(day) ? 'bg-amber-900/20' : ''
                                 }`}
                             onClick={() => {
                                 if (dayBookings.length === 1 && onBookingClick) {
@@ -155,7 +154,7 @@ export const CalendarMonthView: React.FC<CalendarMonthViewProps> = ({
                             }}
                         >
                             {/* Day number */}
-                            <div className={`text-sm font-medium p-1 ${isToday(day) ? 'text-emerald-400' : 'text-slate-400'
+                            <div className={`text-sm font-medium p-1 ${isToday(day) ? 'text-amber-400' : 'text-stone-400'
                                 }`}>
                                 {day}
                             </div>
