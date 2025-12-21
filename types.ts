@@ -62,17 +62,24 @@ export interface Booking {
 export type BookingFormData = Omit<Booking, 'id' | 'createdAt' | 'updatedAt'>;
 
 // Income (Ingresos)
+export type SourceCurrency = 'BRL' | 'ARS' | 'USDT';
+
 export interface Income {
   id: string;
   bookingId?: string;
   date: Timestamp;
-  amountBRL: number;
-  amountUSDT?: number;
-  amountARS?: number;
-  tcUsed?: number;
+  // Montos en diferentes monedas
+  amountBRL: number;        // Monto original en BRL (si sourceCurrency = BRL)
+  amountUSDT?: number;      // Monto en USDT (calculado o ingresado)
+  amountARS?: number;       // Monto en ARS (si sourceCurrency = ARS)
+  // Información de conversión
+  sourceCurrency: SourceCurrency;  // Moneda de origen del pago
+  tcAtOperation?: number;   // TC usado al momento del ingreso (ej: BRL→USDT)
+  tcUsed?: number;          // Legacy: TC usado (mantener compatibilidad)
+  // Metadata
   category: 'rental' | 'deposit' | 'other';
   description: string;
-  isConfirmed: boolean; // false = pendiente de confirmación (ej: pago restante en check-in)
+  isConfirmed: boolean;
   createdAt: Timestamp;
 }
 
@@ -101,13 +108,23 @@ export const EXPENSE_CATEGORIES: Record<ExpenseCategory, string> = {
 };
 
 // Expense (Gastos)
+export type TargetCurrency = 'BRL' | 'ARS';
+
 export interface Expense {
   id: string;
   date: Timestamp;
-  amountBRL: number;
+  // Montos
+  amountBRL: number;          // Monto en BRL (si targetCurrency = BRL)
+  amountUSDT?: number;        // Equivalente en USDT al momento del pago
+  amountARS?: number;         // Monto en ARS (si targetCurrency = ARS)
+  // Información de conversión
+  targetCurrency: TargetCurrency;  // Moneda destino del gasto
+  tcAtPayment?: number;       // TC usado al momento del pago
+  // Metadata
   category: ExpenseCategory;
   description: string;
   isPaid: boolean;
+  paidDate?: Timestamp;       // Fecha real de pago (cuando isPaid = true)
   dueDate?: Timestamp;
   isRecurring: boolean;
   recurringDay?: number;
@@ -123,5 +140,30 @@ export interface Objective {
   currentAmount: number;
   deadline?: Timestamp;
   status: 'active' | 'completed' | 'cancelled';
+  createdAt: Timestamp;
+}
+
+// ============================================
+// Projected Expenses (Gastos Proyectados)
+// ============================================
+
+export type ProjectedExpenseCategory = 'arreglos' | 'mejoras' | 'servicios' | 'otros';
+
+export const PROJECTED_EXPENSE_CATEGORIES: Record<ProjectedExpenseCategory, string> = {
+  arreglos: 'Arreglos',
+  mejoras: 'Mejoras',
+  servicios: 'Servicios',
+  otros: 'Otros',
+};
+
+export interface ProjectedExpense {
+  id: string;
+  title: string;
+  estimatedAmountUSDT: number;  // Siempre en USDT
+  category: ProjectedExpenseCategory;
+  priority: 'alta' | 'media' | 'baja';
+  targetDate?: Timestamp;
+  status: 'pendiente' | 'comprado' | 'cancelado';
+  notes?: string;
   createdAt: Timestamp;
 }

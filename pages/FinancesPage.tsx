@@ -204,41 +204,61 @@ export const FinancesPage: React.FC = () => {
                 )}
             </div>
 
-            {/* Summary Cards */}
+            {/* Summary Cards - USDT as primary currency */}
             <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+                {/* Total Income - USDT primary */}
                 <div className="bg-slate-800/50 rounded-xl p-4 border border-emerald-500/30">
                     <p className="text-xs text-slate-500 mb-1">{filterByMonth ? 'Ingresos del mes' : 'Total ingresos'}</p>
                     <p className="text-2xl font-bold text-emerald-400">
+                        {(() => {
+                            const totalUSDT = filteredIncomes.reduce((sum, inc) => sum + (inc.amountUSDT || 0), 0);
+                            return totalUSDT > 0
+                                ? `${totalUSDT.toLocaleString('en-US', { minimumFractionDigits: 2 })} USDT`
+                                : `R$ ${totalIncome.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}`;
+                        })()}
+                    </p>
+                    <p className="text-xs text-slate-500 mt-1">
                         R$ {totalIncome.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
                     </p>
-                    {rates && (
-                        <p className="text-xs text-slate-500 mt-1">
-                            ≈ ${convertToARS(totalIncome)?.toLocaleString('es-AR', { maximumFractionDigits: 0 })} ARS
-                        </p>
-                    )}
                 </div>
+
+                {/* Total Expenses - USDT primary */}
                 <div className="bg-slate-800/50 rounded-xl p-4 border border-red-500/30">
                     <p className="text-xs text-slate-500 mb-1">{filterByMonth ? 'Gastos del mes' : 'Total gastos'}</p>
                     <p className="text-2xl font-bold text-red-400">
+                        {(() => {
+                            const totalUSDT = filteredExpenses.reduce((sum, exp) => sum + (exp.amountUSDT || 0), 0);
+                            return totalUSDT > 0
+                                ? `${totalUSDT.toLocaleString('en-US', { minimumFractionDigits: 2 })} USDT`
+                                : `R$ ${totalExpenses.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}`;
+                        })()}
+                    </p>
+                    <p className="text-xs text-slate-500 mt-1">
                         R$ {totalExpenses.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
                     </p>
-                    {rates && (
-                        <p className="text-xs text-slate-500 mt-1">
-                            ≈ ${convertToARS(totalExpenses)?.toLocaleString('es-AR', { maximumFractionDigits: 0 })} ARS
-                        </p>
-                    )}
                 </div>
+
+                {/* Balance - USDT primary */}
                 <div className={`bg-slate-800/50 rounded-xl p-4 border ${balance >= 0 ? 'border-emerald-500/30' : 'border-red-500/30'}`}>
-                    <p className="text-xs text-slate-500 mb-1">Balance</p>
+                    <p className="text-xs text-slate-500 mb-1">Balance (USDT)</p>
                     <p className={`text-2xl font-bold ${balance >= 0 ? 'text-emerald-400' : 'text-red-400'}`}>
+                        {(() => {
+                            const incomeUSDT = filteredIncomes.reduce((sum, inc) => sum + (inc.amountUSDT || 0), 0);
+                            const expenseUSDT = filteredExpenses.reduce((sum, exp) => sum + (exp.amountUSDT || 0), 0);
+                            const balanceUSDT = incomeUSDT - expenseUSDT;
+                            return balanceUSDT !== 0
+                                ? `${balanceUSDT.toLocaleString('en-US', { minimumFractionDigits: 2 })} USDT`
+                                : rates
+                                    ? `≈ ${convertToUSDT(balance)?.toLocaleString('en-US', { minimumFractionDigits: 2 })} USDT`
+                                    : `R$ ${balance.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}`;
+                        })()}
+                    </p>
+                    <p className="text-xs text-slate-500 mt-1">
                         R$ {balance.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
                     </p>
-                    {rates && (
-                        <p className="text-xs text-slate-500 mt-1">
-                            ≈ {convertToUSDT(balance)?.toLocaleString('en-US', { minimumFractionDigits: 2 })} USDT
-                        </p>
-                    )}
                 </div>
+
+                {/* Pending Income */}
                 <div className="bg-slate-800/50 rounded-xl p-4 border border-amber-500/30">
                     <p className="text-xs text-slate-500 mb-1">Por cobrar (check-ins)</p>
                     <p className="text-2xl font-bold text-amber-400">
@@ -246,7 +266,7 @@ export const FinancesPage: React.FC = () => {
                     </p>
                     {rates && (
                         <p className="text-xs text-slate-500 mt-1">
-                            ≈ ${convertToARS(totalPendingIncome)?.toLocaleString('es-AR', { maximumFractionDigits: 0 })} ARS
+                            ≈ {convertToUSDT(totalPendingIncome)?.toLocaleString('en-US', { minimumFractionDigits: 2 })} USDT
                         </p>
                     )}
                 </div>
@@ -503,6 +523,7 @@ export const FinancesPage: React.FC = () => {
                                     }}
                                     onDelete={selectedIncome ? handleDeleteIncome : undefined}
                                     isLoading={isSubmitting}
+                                    currentTC={rates?.usdtBrl}
                                 />
                             ) : (
                                 <ExpenseForm
@@ -513,6 +534,7 @@ export const FinancesPage: React.FC = () => {
                                         setSelectedExpense(null);
                                     }}
                                     isLoading={isSubmitting}
+                                    currentTC={rates ? { usdtBrl: rates.usdtBrl, usdtArs: rates.usdtArs } : undefined}
                                 />
                             )}
                         </div>
