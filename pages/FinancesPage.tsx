@@ -3,11 +3,13 @@ import { useExpenses, ExpenseFormData } from '../hooks/useExpenses';
 import { useIncome, IncomeFormData } from '../hooks/useIncome';
 import { useBookings } from '../hooks/useBookings';
 import { useRealTimeRates } from '../hooks/useRealTimeRates';
+import { useProjectedExpenses, ProjectedExpenseFormData } from '../hooks/useProjectedExpenses';
 import { ExpenseForm } from '../components/forms/ExpenseForm';
 import { IncomeForm } from '../components/forms/IncomeForm';
-import { Expense, Income, Booking, EXPENSE_CATEGORIES } from '../types';
+import { ProjectedExpenseForm } from '../components/forms/ProjectedExpenseForm';
+import { Expense, Income, ProjectedExpense, EXPENSE_CATEGORIES, PROJECTED_EXPENSE_CATEGORIES } from '../types';
 
-type Tab = 'income' | 'expenses' | 'pending-expenses' | 'pending-income';
+type Tab = 'income' | 'expenses' | 'pending-expenses' | 'pending-income' | 'projected';
 
 const MONTHS = [
     'Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio',
@@ -19,14 +21,24 @@ export const FinancesPage: React.FC = () => {
     const { incomes, isLoading: incomesLoading, addIncome, updateIncome, deleteIncome } = useIncome();
     const { bookings, isLoading: bookingsLoading } = useBookings();
     const { rates } = useRealTimeRates();
+    const {
+        projectedExpenses,
+        isLoading: projectedLoading,
+        addProjectedExpense,
+        updateProjectedExpense,
+        deleteProjectedExpense,
+        getTotalPendingUSDT,
+        getPendingExpenses: getPendingProjected
+    } = useProjectedExpenses();
 
     const [activeTab, setActiveTab] = useState<Tab>('income');
     const [filterByMonth, setFilterByMonth] = useState(false);
     const [currentDate, setCurrentDate] = useState(new Date());
     const [showModal, setShowModal] = useState(false);
-    const [modalType, setModalType] = useState<'income' | 'expense'>('income');
+    const [modalType, setModalType] = useState<'income' | 'expense' | 'projected'>('income');
     const [selectedIncome, setSelectedIncome] = useState<Income | null>(null);
     const [selectedExpense, setSelectedExpense] = useState<Expense | null>(null);
+    const [selectedProjectedExpense, setSelectedProjectedExpense] = useState<ProjectedExpense | null>(null);
     const [isSubmitting, setIsSubmitting] = useState(false);
 
     const year = currentDate.getFullYear();
@@ -79,8 +91,9 @@ export const FinancesPage: React.FC = () => {
     const tabs: { id: Tab; label: string; icon: string; count?: number }[] = [
         { id: 'income', label: 'Ingresos', icon: '💰', count: filteredIncomes.length },
         { id: 'expenses', label: 'Gastos', icon: '💸', count: filteredExpenses.length },
-        { id: 'pending-expenses', label: 'Gastos Pendientes', icon: '⏰', count: pendingExpenses.length },
+        { id: 'pending-expenses', label: 'Pendientes', icon: '⏰', count: pendingExpenses.length },
         { id: 'pending-income', label: 'Por Cobrar', icon: '📥', count: pendingIncomeFromBookings.length },
+        { id: 'projected', label: 'Proyectados', icon: '🎯', count: getPendingProjected().length },
     ];
 
     const navigateMonth = (direction: 'prev' | 'next') => {
@@ -486,6 +499,81 @@ export const FinancesPage: React.FC = () => {
                             </div>
                         )
                     )}
+
+                    {/* Projected Expenses Tab */}
+                    {activeTab === 'projected' && (
+                        <div>
+                            {/* Header with add button */}
+                            <div className="p-4 border-b border-slate-700/50 flex items-center justify-between">
+                                <div>
+                                    <p className="text-sm text-slate-400">Total pendiente</p>
+                                    <p className="text-xl font-bold text-amber-400">
+                                        {getTotalPendingUSDT().toLocaleString('en-US', { minimumFractionDigits: 2 })} USDT
+                                    </p>
+                                </div>
+                                <button
+                                    onClick={() => {
+                                        setModalType('projected');
+                                        setSelectedProjectedExpense(null);
+                                        setShowModal(true);
+                                    }}
+                                    className="px-4 py-2 bg-amber-600 hover:bg-amber-500 text-white rounded-lg transition-colors text-sm font-medium"
+                                >
+                                    + Gasto Proyectado
+                                </button>
+                            </div>
+
+                            {projectedExpenses.length === 0 ? (
+                                <p className="text-slate-500 text-center py-12">No hay gastos proyectados</p>
+                            ) : (
+                                <div className="divide-y divide-slate-700/50">
+                                    {projectedExpenses.map((proj) => (
+                                        <div
+                                            key={proj.id}
+                                            className="p-4 hover:bg-slate-700/30 cursor-pointer transition-colors"
+                                            onClick={() => {
+                                                setSelectedProjectedExpense(proj);
+                                                setModalType('projected');
+                                                setShowModal(true);
+                                            }}
+                                        >
+                                            <div className="flex items-center justify-between">
+                                                <div>
+                                                    <div className="flex items-center gap-2">
+                                                        <p className="text-white font-medium">{proj.title}</p>
+                                                        <span className={`text-xs px-2 py-0.5 rounded ${proj.priority === 'alta' ? 'bg-red-900/50 text-red-300' :
+                                                            proj.priority === 'media' ? 'bg-amber-900/50 text-amber-300' :
+                                                                'bg-slate-700 text-slate-300'
+                                                            }`}>
+                                                            {proj.priority}
+                                                        </span>
+                                                    </div>
+                                                    <div className="flex items-center gap-2 mt-1">
+                                                        <span className="text-xs px-2 py-0.5 bg-slate-700 rounded text-slate-300">
+                                                            {PROJECTED_EXPENSE_CATEGORIES[proj.category]}
+                                                        </span>
+                                                        <span className={`text-xs ${proj.status === 'pendiente' ? 'text-amber-400' : 'text-emerald-400'}`}>
+                                                            {proj.status === 'pendiente' ? '⏳ Pendiente' : '✓ Comprado'}
+                                                        </span>
+                                                    </div>
+                                                </div>
+                                                <div className="text-right">
+                                                    <p className="text-amber-400 font-semibold">
+                                                        {proj.estimatedAmountUSDT.toLocaleString('en-US', { minimumFractionDigits: 2 })} USDT
+                                                    </p>
+                                                    {proj.targetDate && (
+                                                        <p className="text-xs text-slate-500">
+                                                            Meta: {formatDate(proj.targetDate.toDate())}
+                                                        </p>
+                                                    )}
+                                                </div>
+                                            </div>
+                                        </div>
+                                    ))}
+                                </div>
+                            )}
+                        </div>
+                    )}
                 </div>
             )}
 
@@ -498,7 +586,9 @@ export const FinancesPage: React.FC = () => {
                                 <h3 className="text-xl font-semibold text-white">
                                     {modalType === 'income'
                                         ? (selectedIncome ? 'Editar ingreso' : 'Nuevo ingreso')
-                                        : (selectedExpense ? 'Editar gasto' : 'Nuevo gasto')
+                                        : modalType === 'expense'
+                                            ? (selectedExpense ? 'Editar gasto' : 'Nuevo gasto')
+                                            : (selectedProjectedExpense ? 'Editar gasto proyectado' : 'Nuevo gasto proyectado')
                                     }
                                 </h3>
                                 <button
@@ -525,7 +615,7 @@ export const FinancesPage: React.FC = () => {
                                     isLoading={isSubmitting}
                                     currentTC={rates?.usdtBrl}
                                 />
-                            ) : (
+                            ) : modalType === 'expense' ? (
                                 <ExpenseForm
                                     initialData={selectedExpense || undefined}
                                     onSubmit={handleExpenseSubmit}
@@ -535,6 +625,39 @@ export const FinancesPage: React.FC = () => {
                                     }}
                                     isLoading={isSubmitting}
                                     currentTC={rates ? { usdtBrl: rates.usdtBrl, usdtArs: rates.usdtArs } : undefined}
+                                />
+                            ) : (
+                                <ProjectedExpenseForm
+                                    initialData={selectedProjectedExpense ? { ...selectedProjectedExpense, id: selectedProjectedExpense.id } : undefined}
+                                    onSubmit={async (data) => {
+                                        setIsSubmitting(true);
+                                        try {
+                                            if (selectedProjectedExpense) {
+                                                await updateProjectedExpense(selectedProjectedExpense.id, data);
+                                            } else {
+                                                await addProjectedExpense(data);
+                                            }
+                                            setShowModal(false);
+                                            setSelectedProjectedExpense(null);
+                                        } finally {
+                                            setIsSubmitting(false);
+                                        }
+                                    }}
+                                    onCancel={() => {
+                                        setShowModal(false);
+                                        setSelectedProjectedExpense(null);
+                                    }}
+                                    onDelete={selectedProjectedExpense ? async () => {
+                                        setIsSubmitting(true);
+                                        try {
+                                            await deleteProjectedExpense(selectedProjectedExpense.id);
+                                            setShowModal(false);
+                                            setSelectedProjectedExpense(null);
+                                        } finally {
+                                            setIsSubmitting(false);
+                                        }
+                                    } : undefined}
+                                    isLoading={isSubmitting}
                                 />
                             )}
                         </div>
